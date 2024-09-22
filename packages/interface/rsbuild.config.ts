@@ -13,4 +13,7 @@ export default defineConfig({
     title: `图床资源管理`,
     favicon: './src/assets/CatppuccinFolderImagesOpen.svg',
   },
+  dev: {
+    hmr: false,
+  },
 });

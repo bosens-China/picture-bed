@@ -23,6 +23,7 @@ const App = () => {
               lineHeight: '64px',
             }}
             level={1}
+            className="flex-1"
           >
             <Space align="center">
               <img

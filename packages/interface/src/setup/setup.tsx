@@ -1,3 +1,5 @@
 export const Setup = () => {
-  return null;
+  return (
+    <div className="i-catppuccin-eslint-ignore text-size-2xl cursor-pointer"></div>
+  );
 };
