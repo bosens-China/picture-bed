@@ -7,14 +7,18 @@ import {
   UploadProps,
   message,
 } from 'antd';
-import { useState } from 'react';
-import { InboxOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
+import { ExclamationCircleFilled, InboxOutlined } from '@ant-design/icons';
+
+import { useDocumentVisibility } from 'ahooks';
 
 const { Dragger } = MyUpload;
 
 type FieldType = {
   property?: string[];
 };
+
+const { confirm } = Modal;
 
 export const Upload = () => {
   const [open, setOpen] = useState(false);
@@ -24,6 +28,64 @@ export const Upload = () => {
   const handleOk = () => {
     setOpen(false);
   };
+
+  const documentVisibility = useDocumentVisibility();
+
+  /*
+   * 读取剪切板
+   */
+  const checkClipboard = async () => {
+    try {
+      // 请求剪切板权限
+      const clipboardItems = await navigator.clipboard.read();
+      const files: Blob[] = [];
+      for (const clipboardItem of clipboardItems) {
+        // 检查剪切板是否包含图片
+        for (const type of clipboardItem.types) {
+          if (type.startsWith('image/')) {
+            const blob = await clipboardItem.getType(type);
+            files.push(blob);
+          }
+        }
+      }
+      return files;
+    } catch {
+      return [];
+    }
+  };
+
+  /*
+   * 页面变动监听剪切板的变化，读取所有图片资源来上传
+   */
+  useEffect(() => {
+    if (documentVisibility !== 'visible') {
+      return;
+    }
+    (async () => {
+      const files = await checkClipboard();
+      if (!files.length) {
+        return;
+      }
+      confirm({
+        title: '上传提醒?',
+        icon: <ExclamationCircleFilled />,
+        content: !open
+          ? '检测到剪切板包含图片资源，是否打开上传资源对话框，上传相关资源？'
+          : `检测到剪切板包含图片资源，是否将相关资源上传到代上传资源列表？`,
+        onOk() {
+          if (!open) {
+            setOpen(true);
+          }
+          // 赋值
+        },
+        onCancel() {
+          //
+        },
+      });
+    })();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentVisibility]);
 
   const uploadProps: UploadProps = {
     name: 'file',
