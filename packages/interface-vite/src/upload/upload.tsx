@@ -34,21 +34,21 @@ export const Upload = () => {
   /*
    * 读取剪切板
    */
-  const checkClipboard = async () => {
+  const checkClipboard = async (): Promise<Blob[]> => {
     try {
       // 请求剪切板权限
       const clipboardItems = await navigator.clipboard.read();
-      const files: Blob[] = [];
+      const files: Promise<Blob>[] = [];
       for (const clipboardItem of clipboardItems) {
         // 检查剪切板是否包含图片
         for (const type of clipboardItem.types) {
           if (type.startsWith('image/')) {
-            const blob = await clipboardItem.getType(type);
+            const blob = clipboardItem.getType(type);
             files.push(blob);
           }
         }
       }
-      return files;
+      return await Promise.all(files);
     } catch {
       return [];
     }
