@@ -5,7 +5,9 @@ import {
   Tooltip,
   Upload as MyUpload,
   UploadProps,
-  message,
+  App,
+  Row,
+  Col,
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { ExclamationCircleFilled, InboxOutlined } from '@ant-design/icons';
@@ -16,17 +18,22 @@ const { Dragger } = MyUpload;
 
 type FieldType = {
   property?: string[];
+  propertyDir?: string[];
 };
 
 const { confirm } = Modal;
 
 export const Upload = () => {
   const [open, setOpen] = useState(false);
+  const { message } = App.useApp();
+  const [form] = Form.useForm();
+
   const handleCancel = () => {
     setOpen(false);
+    form.resetFields();
   };
   const handleOk = () => {
-    setOpen(false);
+    handleCancel();
   };
 
   const documentVisibility = useDocumentVisibility();
@@ -38,6 +45,7 @@ export const Upload = () => {
     try {
       // 请求剪切板权限
       const clipboardItems = await navigator.clipboard.read();
+
       const files: Promise<Blob>[] = [];
       for (const clipboardItem of clipboardItems) {
         // 检查剪切板是否包含图片
@@ -71,7 +79,7 @@ export const Upload = () => {
         icon: <ExclamationCircleFilled />,
         content: !open
           ? '检测到剪切板包含图片资源，是否打开上传资源对话框，上传相关资源？'
-          : `检测到剪切板包含图片资源，是否将相关资源上传到代上传资源列表？`,
+          : `检测到剪切板包含图片资源，是否将相关资源上传到待上传资源列表？`,
         onOk() {
           if (!open) {
             setOpen(true);
@@ -88,25 +96,32 @@ export const Upload = () => {
   }, [documentVisibility]);
 
   const uploadProps: UploadProps = {
-    name: 'file',
     multiple: true,
-    directory: true,
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
+
+    customRequest(options) {
+      options.onSuccess?.(`${Date.now()}`);
     },
   };
+
+  type UploadItems = {
+    name: keyof FieldType;
+    describe: [string] | [string, string];
+    label: string;
+  } & Partial<UploadProps>;
+
+  const uploadItems: UploadItems[] = [
+    {
+      name: 'property',
+      describe: [`单击或拖动文件到此区域进行上传`, `支持单次或批量上传`],
+      label: '待上传资源',
+    },
+    {
+      name: 'propertyDir',
+      describe: [`单击或拖动文件夹到此区域进行上传`],
+      label: '待上传资源（文件夹）',
+      directory: true,
+    },
+  ];
 
   return (
     <>
@@ -122,28 +137,51 @@ export const Upload = () => {
         open={open}
         onOk={handleOk}
         onCancel={handleCancel}
+        width={800}
+        centered
       >
-        <Form initialValues={{}} autoComplete="off" layout="vertical">
-          <Form.Item<FieldType>
-            label="代上传资源"
-            name="property"
-            rules={[
-              {
-                required: true,
-                message: '请上传资源文件!',
-                type: 'array',
-                min: 1,
-              },
-            ]}
-          >
-            <Dragger {...uploadProps}>
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">单击或拖动文件到此区域进行上传</p>
-              <p className="ant-upload-hint">支持单次或批量上传</p>
-            </Dragger>
-          </Form.Item>
+        <Form
+          initialValues={{}}
+          autoComplete="off"
+          layout="vertical"
+          form={form}
+        >
+          <Row align="middle" gutter={16}>
+            {uploadItems.map((item) => {
+              return (
+                <Col span={12} key={item.name}>
+                  <Form.Item<FieldType>
+                    valuePropName="fileList"
+                    label={item.label}
+                    name={item.name}
+                    getValueFromEvent={(e) => {
+                      if (Array.isArray(e)) {
+                        return e;
+                      }
+                      return e?.fileList;
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: '请上传资源文件!',
+                        type: 'array',
+                      },
+                    ]}
+                  >
+                    <Dragger {...{ ...uploadProps, ...item }}>
+                      <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                      </p>
+                      <p className="ant-upload-text">{item.describe[0]}</p>
+                      {item.describe[1] && (
+                        <p className="ant-upload-hint">{item.describe[1]}</p>
+                      )}
+                    </Dragger>
+                  </Form.Item>
+                </Col>
+              );
+            })}
+          </Row>
         </Form>
       </Modal>
     </>

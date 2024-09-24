@@ -6,6 +6,7 @@ import 'dayjs/locale/zh-cn';
 import { ConfigProvider } from 'antd';
 import '@/assets/styles/converge.less';
 import 'virtual:uno.css';
+import { App as AppProvider } from 'antd';
 
 const rootEl = document.getElementById('root');
 if (rootEl) {
@@ -24,7 +25,9 @@ if (rootEl) {
           },
         }}
       >
-        <App />
+        <AppProvider>
+          <App />
+        </AppProvider>
       </ConfigProvider>
     </React.StrictMode>,
   );
