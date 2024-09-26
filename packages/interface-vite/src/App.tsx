@@ -1,14 +1,32 @@
-import { Affix, Card, Col, Layout, Row, Space } from 'antd';
+import { Affix, App, Card, Col, Layout, Row, Space, Spin } from 'antd';
 import { Upload } from './upload/upload';
 import { Setup } from './setup/setup';
 import { Typography } from 'antd';
 import CatppuccinFolderImagesOpen from '@/assets/CatppuccinFolderImagesOpen.svg';
+import { imgHistory } from 'core/api/page.ts';
+import { useRequest } from 'ahooks';
+import { store } from '@/store';
 
 const { Title } = Typography;
 const { Meta } = Card;
 const { Header, Content, Footer } = Layout;
 
-const App = () => {
+const MyApp = () => {
+  const { message } = App.useApp();
+  const { user } = store;
+  const { loading, data } = useRequest(imgHistory, {
+    defaultParams: [
+      {
+        uid: user?.uid || '',
+      },
+    ],
+    onError(e) {
+      message.error(e.message);
+    },
+    ready: !!user?.uid,
+    refreshDeps: [user],
+  });
+
   return (
     <Layout className="h-100vh">
       <Affix offsetTop={0}>
@@ -44,35 +62,37 @@ const App = () => {
         </Header>
       </Affix>
       <Content className="p-12px">
-        <Row gutter={[16, 16]}>
-          <Col
-            xs={{ flex: '100%' }}
-            md={{ flex: '50%' }}
-            lg={{ flex: '33%' }}
-            xl={{ flex: '25%' }}
-          >
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={
-                <img
-                  alt="example"
-                  className="max-h-200px w-auto object-fill"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
+        <Spin spinning={loading}>
+          <Row gutter={[16, 16]}>
+            <Col
+              xs={{ flex: '100%' }}
+              md={{ flex: '50%' }}
+              lg={{ flex: '33%' }}
+              xl={{ flex: '25%' }}
             >
-              <Meta
-                title="Europe Street beat"
-                description="www.instagram.com"
-              />
-            </Card>
-          </Col>
-        </Row>
+              <Card
+                hoverable
+                style={{ width: 240 }}
+                cover={
+                  <img
+                    alt="example"
+                    className="max-h-200px w-auto object-fill"
+                    src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+                  />
+                }
+              >
+                <Meta
+                  title="Europe Street beat"
+                  description="www.instagram.com"
+                />
+              </Card>
+            </Col>
+          </Row>
+        </Spin>
         <Footer>Footer</Footer>
       </Content>
     </Layout>
   );
 };
 
-export default App;
+export default MyApp;

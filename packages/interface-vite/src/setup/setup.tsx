@@ -2,6 +2,7 @@ import { DownSquareTwoTone, UpSquareTwoTone } from '@ant-design/icons';
 import { App, Button, Form, Input, Modal, theme, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { RootStore, store } from '@/store';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 export type FieldType = RootStore['user'];
 
@@ -17,10 +18,23 @@ export const Setup = () => {
   const { user } = store;
 
   useEffect(() => {
-    if (!user) {
-      setOpen(true);
+    /*
+     * 初始情况下，如果不包含uid，则直接生成一个
+     */
+    if (!store.user?.uid) {
+      FingerprintJS.load()
+        .then((res) => {
+          return res.get();
+        })
+        .then((res) => {
+          store('user', (values) => {
+            return {
+              uid: res.visitorId,
+              ...values,
+            };
+          });
+        });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [form] = Form.useForm<FieldType>();

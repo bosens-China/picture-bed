@@ -7,18 +7,23 @@ import {
   App,
   Dropdown,
   DropdownProps,
+  Button,
+  UploadFile,
+  Progress,
 } from 'antd';
 
 import { ExclamationCircleFilled, InboxOutlined } from '@ant-design/icons';
-
-import { useDocumentVisibility, useUpdateEffect } from 'ahooks';
+import { store } from '@/store';
+import { useDocumentVisibility, useRequest, useUpdateEffect } from 'ahooks';
 import { useMemo, useState } from 'react';
+import { uploadFiles } from 'core';
+import { UploadBody } from 'core/api/upload.ts';
+import { AxiosError } from 'axios';
 
 const { Dragger } = MyUpload;
 
 type FieldType = {
-  property?: string[];
-  propertyDir?: string[];
+  property?: UploadFile[];
 };
 
 const { confirm } = Modal;
@@ -28,20 +33,62 @@ export const Upload = () => {
   const [modalState, setModalState] = useState<{
     open: boolean;
     isDir?: boolean;
+    // 百分比
+    percent: number;
   }>({
     open: false,
     isDir: false,
+    percent: 0,
   });
-
+  const { user } = store;
   const { message } = App.useApp();
-  const [form] = Form.useForm();
-
+  const [form] = Form.useForm<FieldType>();
+  const property = Form.useWatch('property', form);
   const handleCancel = () => {
-    setModalState({ open: false, isDir: false });
+    setModalState({ open: false, isDir: false, percent: 0 });
     form.resetFields();
   };
-  const handleOk = () => {
-    handleCancel();
+
+  const { loading, run } = useRequest(uploadFiles, {
+    manual: true,
+    onSuccess() {
+      message.success(`上传成功`);
+    },
+    onError(e) {
+      const err = e as AxiosError;
+      modalState.percent = 0;
+      switch (err.code) {
+        case 'ERR_NETWORK':
+          message.error(
+            `网络错误访问错误，可能是cors问题也可能是服务端接口出现问题。`,
+          );
+
+          return;
+
+        default:
+          message.error(e.message);
+      }
+    },
+  });
+
+  const handleOk = async () => {
+    const result = await form.validateFields();
+    const files = result.property!.map((item): UploadBody => {
+      return {
+        uid: user!.uid!,
+        file: item.originFileObj,
+      };
+    });
+    run({
+      files,
+      config: {
+        iteratorFn(_item, index, total) {
+          console.log({ index, total });
+
+          modalState.percent = ((index + 1) / total) * 100;
+        },
+      },
+    });
   };
 
   const documentVisibility = useDocumentVisibility();
@@ -90,7 +137,7 @@ export const Upload = () => {
           : `检测到剪切板包含图片资源，是否将相关资源上传到待上传资源列表？`,
         onOk() {
           if (!modalState.open) {
-            setModalState({ open: true });
+            setModalState({ open: true, percent: 0 });
           }
           // 赋值
         },
@@ -124,7 +171,7 @@ export const Upload = () => {
             label: '待上传资源',
           }
         : {
-            name: 'propertyDir',
+            name: 'property',
             describe: [`单击或拖动文件夹到此区域进行上传`],
             label: '待上传资源（文件夹）',
             directory: true,
@@ -142,7 +189,7 @@ export const Upload = () => {
     onClick: (e) => {
       switch (e.key) {
         case 'dir':
-          setModalState({ open: true, isDir: true });
+          setModalState({ open: true, isDir: true, percent: 0 });
           break;
 
         default:
@@ -155,7 +202,7 @@ export const Upload = () => {
     <>
       <Tooltip title="上传资源" placement={'leftTop'}>
         <Dropdown.Button
-          onClick={() => setModalState({ open: true })}
+          onClick={() => setModalState({ open: true, percent: 0 })}
           menu={menu}
           type="primary"
         >
@@ -171,6 +218,17 @@ export const Upload = () => {
         onCancel={handleCancel}
         width={800}
         centered
+        closable={!loading}
+        keyboard={!loading}
+        maskClosable={!loading}
+        footer={[
+          <Button key="not" onClick={handleCancel} disabled={loading}>
+            取消
+          </Button>,
+          <Button key="ok" type="primary" onClick={handleOk} loading={loading}>
+            确定
+          </Button>,
+        ]}
       >
         <Form
           initialValues={{}}
@@ -211,6 +269,15 @@ export const Upload = () => {
               </Form.Item>
             );
           })}
+
+          <Form.Item label="上传进度">
+            <Progress
+              steps={property?.length}
+              percent={modalState.percent}
+              size={[20, 30]}
+              className={!property?.length ? 'op-0' : ''}
+            />
+          </Form.Item>
         </Form>
       </Modal>
     </>
