@@ -9,10 +9,10 @@ import {
   Row,
   Col,
 } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ExclamationCircleFilled, InboxOutlined } from '@ant-design/icons';
 
-import { useDocumentVisibility } from 'ahooks';
+import { useDocumentVisibility, useUpdateEffect } from 'ahooks';
 
 const { Dragger } = MyUpload;
 
@@ -65,7 +65,7 @@ export const Upload = () => {
   /*
    * 页面变动监听剪切板的变化，读取所有图片资源来上传
    */
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (documentVisibility !== 'visible') {
       return;
     }
@@ -91,8 +91,6 @@ export const Upload = () => {
         },
       });
     })();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentVisibility]);
 
   const uploadProps: UploadProps = {

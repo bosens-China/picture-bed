@@ -119,6 +119,12 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      resso:
+        specifier: ^0.17.0
+        version: 0.17.0(react@18.3.1)
+      seroval:
+        specifier: ^1.1.1
+        version: 1.1.1
     devDependencies:
       '@iconify-json/catppuccin':
         specifier: ^1.2.3
@@ -4481,6 +4487,14 @@ packages:
       }
     hasBin: true
 
+  resso@0.17.0:
+    resolution:
+      {
+        integrity: sha512-KbJ9eUQabJawXP3A/6V24GgqVlcg5Air5k8B43bbRjsqp8FgiH1DOH8OnGzMbK7moBYRoe47TqCYjj38SagQRw==,
+      }
+    peerDependencies:
+      react: '>=16.8.0'
+
   restore-cursor@5.1.0:
     resolution:
       {
@@ -4588,6 +4602,13 @@ packages:
       }
     engines: { node: '>=10' }
     hasBin: true
+
+  seroval@1.1.1:
+    resolution:
+      {
+        integrity: sha512-rqEO6FZk8mv7Hyv4UCj3FD3b6Waqft605TLfsCe/BiaylRpyyMC0b+uA5TJKawX3KzMrdi3wsLbCaLplrQmBvQ==,
+      }
+    engines: { node: '>=10' }
 
   set-function-length@1.2.2:
     resolution:
@@ -5006,6 +5027,14 @@ packages:
       {
         integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==,
       }
+
+  use-sync-external-store@1.2.2:
+    resolution:
+      {
+        integrity: sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==,
+      }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   uvu@0.5.6:
     resolution:
@@ -8178,6 +8207,11 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
+  resso@0.17.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      use-sync-external-store: 1.2.2(react@18.3.1)
+
   restore-cursor@5.1.0:
     dependencies:
       onetime: 7.0.0
@@ -8252,6 +8286,8 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.6.3: {}
+
+  seroval@1.1.1: {}
 
   set-function-length@1.2.2:
     dependencies:
@@ -8553,6 +8589,10 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  use-sync-external-store@1.2.2(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   uvu@0.5.6:
     dependencies:

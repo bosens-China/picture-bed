@@ -1,10 +1,9 @@
 import { DownSquareTwoTone, UpSquareTwoTone } from '@ant-design/icons';
 import { App, Button, Form, Input, Modal, theme, Tooltip } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { RootStore, store } from '@/store';
 
-type FieldType = {
-  uid: string;
-};
+export type FieldType = RootStore['user'];
 
 const { useToken } = theme;
 
@@ -15,15 +14,39 @@ export const Setup = () => {
   const { message } = App.useApp();
   const { token } = useToken();
 
-  const [form] = Form.useForm();
+  const { user } = store;
+
+  useEffect(() => {
+    if (!user) {
+      setOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [form] = Form.useForm<FieldType>();
+
+  /*
+   * 动态更新值，initialValues 不能被 setState 动态更新
+   * https://procomponents.ant.design/docs/faq
+   */
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    form.resetFields();
+    form.setFieldsValue(user || {});
+  }, [form, open, user]);
 
   const handleCancel = () => {
     setOpen(false);
     form.resetFields();
     setExpand(false);
   };
-  const handleOk = () => {
+  const handleOk = async () => {
+    const values = await form.validateFields();
+    store('user', values);
     handleCancel();
+    message.success('设置成功');
   };
 
   return (
@@ -42,9 +65,21 @@ export const Setup = () => {
         onCancel={handleCancel}
         width={600}
         centered
+        closable={!!user}
+        keyboard={!!user}
+        maskClosable={!!user}
+        footer={[
+          <Button key="not" disabled={!user} onClick={handleCancel}>
+            取消
+          </Button>,
+          <Button key="ok" type="primary" onClick={handleOk}>
+            确定
+          </Button>,
+        ]}
       >
         <Form
-          initialValues={{}}
+          onFinish={handleOk}
+          initialValues={user}
           autoComplete="off"
           layout="vertical"
           form={form}
