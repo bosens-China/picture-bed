@@ -1,0 +1,14 @@
+{
+  "name": "interface-electron",
+  "version": "1.0.0",
+  "main": "src/entry.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^32.1.2",
+    "esbuild-register": "^3.6.0",
+    "tsx": "^4.19.1"
+  }
+}
