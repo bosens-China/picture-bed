@@ -1,18 +1,18 @@
 import {
-  Button,
   Form,
   Modal,
   Tooltip,
   Upload as MyUpload,
   UploadProps,
   App,
-  Row,
-  Col,
+  Dropdown,
+  DropdownProps,
 } from 'antd';
-import { useState } from 'react';
+
 import { ExclamationCircleFilled, InboxOutlined } from '@ant-design/icons';
 
 import { useDocumentVisibility, useUpdateEffect } from 'ahooks';
+import { useMemo, useState } from 'react';
 
 const { Dragger } = MyUpload;
 
@@ -24,12 +24,20 @@ type FieldType = {
 const { confirm } = Modal;
 
 export const Upload = () => {
-  const [open, setOpen] = useState(false);
+  // Modal 相关状态
+  const [modalState, setModalState] = useState<{
+    open: boolean;
+    isDir?: boolean;
+  }>({
+    open: false,
+    isDir: false,
+  });
+
   const { message } = App.useApp();
   const [form] = Form.useForm();
 
   const handleCancel = () => {
-    setOpen(false);
+    setModalState({ open: false, isDir: false });
     form.resetFields();
   };
   const handleOk = () => {
@@ -77,12 +85,12 @@ export const Upload = () => {
       confirm({
         title: '上传提醒?',
         icon: <ExclamationCircleFilled />,
-        content: !open
+        content: !modalState.open
           ? '检测到剪切板包含图片资源，是否打开上传资源对话框，上传相关资源？'
           : `检测到剪切板包含图片资源，是否将相关资源上传到待上传资源列表？`,
         onOk() {
-          if (!open) {
-            setOpen(true);
+          if (!modalState.open) {
+            setModalState({ open: true });
           }
           // 赋值
         },
@@ -107,32 +115,58 @@ export const Upload = () => {
     label: string;
   } & Partial<UploadProps>;
 
-  const uploadItems: UploadItems[] = [
-    {
-      name: 'property',
-      describe: [`单击或拖动文件到此区域进行上传`, `支持单次或批量上传`],
-      label: '待上传资源',
+  const uploadItems = useMemo<UploadItems[]>(() => {
+    return [
+      !modalState.isDir
+        ? {
+            name: 'property',
+            describe: [`单击或拖动文件到此区域进行上传`, `支持单次或批量上传`],
+            label: '待上传资源',
+          }
+        : {
+            name: 'propertyDir',
+            describe: [`单击或拖动文件夹到此区域进行上传`],
+            label: '待上传资源（文件夹）',
+            directory: true,
+          },
+    ];
+  }, [modalState.isDir]);
+
+  const menu: DropdownProps['menu'] = {
+    items: [
+      {
+        key: 'dir',
+        label: '上传资源（文件夹）',
+      },
+    ],
+    onClick: (e) => {
+      switch (e.key) {
+        case 'dir':
+          setModalState({ open: true, isDir: true });
+          break;
+
+        default:
+          break;
+      }
     },
-    {
-      name: 'propertyDir',
-      describe: [`单击或拖动文件夹到此区域进行上传`],
-      label: '待上传资源（文件夹）',
-      directory: true,
-    },
-  ];
+  };
 
   return (
     <>
       <Tooltip title="上传资源" placement={'leftTop'}>
-        <Button type="primary" className="flex" onClick={() => setOpen(true)}>
+        <Dropdown.Button
+          onClick={() => setModalState({ open: true })}
+          menu={menu}
+          type="primary"
+        >
           <div className="i-catppuccin-folder-upload-open text-size-2xl cursor-pointer"></div>
           上传资源
-        </Button>
+        </Dropdown.Button>
       </Tooltip>
 
       <Modal
         title="上传资源"
-        open={open}
+        open={modalState.open}
         onOk={handleOk}
         onCancel={handleCancel}
         width={800}
@@ -144,42 +178,39 @@ export const Upload = () => {
           layout="vertical"
           form={form}
         >
-          <Row align="middle" gutter={16}>
-            {uploadItems.map((item) => {
-              return (
-                <Col span={12} key={item.name}>
-                  <Form.Item<FieldType>
-                    valuePropName="fileList"
-                    label={item.label}
-                    name={item.name}
-                    getValueFromEvent={(e) => {
-                      if (Array.isArray(e)) {
-                        return e;
-                      }
-                      return e?.fileList;
-                    }}
-                    rules={[
-                      {
-                        required: true,
-                        message: '请上传资源文件!',
-                        type: 'array',
-                      },
-                    ]}
-                  >
-                    <Dragger {...{ ...uploadProps, ...item }}>
-                      <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                      </p>
-                      <p className="ant-upload-text">{item.describe[0]}</p>
-                      {item.describe[1] && (
-                        <p className="ant-upload-hint">{item.describe[1]}</p>
-                      )}
-                    </Dragger>
-                  </Form.Item>
-                </Col>
-              );
-            })}
-          </Row>
+          {uploadItems.map((item) => {
+            return (
+              <Form.Item<FieldType>
+                key={item.name}
+                valuePropName="fileList"
+                label={item.label}
+                name={item.name}
+                getValueFromEvent={(e) => {
+                  if (Array.isArray(e)) {
+                    return e;
+                  }
+                  return e?.fileList;
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: '请上传资源文件!',
+                    type: 'array',
+                  },
+                ]}
+              >
+                <Dragger {...{ ...uploadProps, ...item }}>
+                  <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                  </p>
+                  <p className="ant-upload-text">{item.describe[0]}</p>
+                  {item.describe[1] && (
+                    <p className="ant-upload-hint">{item.describe[1]}</p>
+                  )}
+                </Dragger>
+              </Form.Item>
+            );
+          })}
         </Form>
       </Modal>
     </>
