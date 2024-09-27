@@ -1,12 +1,14 @@
 import { DownSquareTwoTone, UpSquareTwoTone } from '@ant-design/icons';
 import { App, Button, Form, Input, Modal, theme, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
-import { RootStore, store } from '@/store';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
-
-export type FieldType = RootStore['user'];
+import { useState } from 'react';
+import { useAppSelector } from '@/store/hooks';
+import { activationItem } from '@/store/features/staging/selectors';
 
 const { useToken } = theme;
+
+interface FieldType {
+  uid: string;
+}
 
 export const Setup = () => {
   const [open, setOpen] = useState(false);
@@ -15,41 +17,9 @@ export const Setup = () => {
   const { message } = App.useApp();
   const { token } = useToken();
 
-  const { user } = store;
-
-  useEffect(() => {
-    /*
-     * 初始情况下，如果不包含uid，则直接生成一个
-     */
-    if (!store.user?.uid) {
-      FingerprintJS.load()
-        .then((res) => {
-          return res.get();
-        })
-        .then((res) => {
-          store('user', (values) => {
-            return {
-              uid: res.visitorId,
-              ...values,
-            };
-          });
-        });
-    }
-  }, []);
-
   const [form] = Form.useForm<FieldType>();
 
-  /*
-   * 动态更新值，initialValues 不能被 setState 动态更新
-   * https://procomponents.ant.design/docs/faq
-   */
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-    form.resetFields();
-    form.setFieldsValue(user || {});
-  }, [form, open, user]);
+  const activation = useAppSelector(activationItem);
 
   const handleCancel = () => {
     setOpen(false);
@@ -57,16 +27,20 @@ export const Setup = () => {
     setExpand(false);
   };
   const handleOk = async () => {
-    const values = await form.validateFields();
-    store('user', values);
-    handleCancel();
-    message.success('设置成功');
+    // const values = await form.validateFields();
+    // store('user', values);
+    // handleCancel();
+    // message.success('设置成功');
   };
 
   return (
     <>
       <Tooltip title="打开图床相关设置" placement={'leftTop'}>
-        <Button className="flex" onClick={() => setOpen(true)}>
+        <Button
+          disabled={!activation?.uid}
+          className="flex"
+          onClick={() => setOpen(true)}
+        >
           <div className="i-catppuccin-eslint-ignore text-size-2xl cursor-pointer"></div>
           设置
         </Button>
@@ -79,11 +53,8 @@ export const Setup = () => {
         onCancel={handleCancel}
         width={600}
         centered
-        closable={!!user}
-        keyboard={!!user}
-        maskClosable={!!user}
         footer={[
-          <Button key="not" disabled={!user} onClick={handleCancel}>
+          <Button key="not" onClick={handleCancel}>
             取消
           </Button>,
           <Button key="ok" type="primary" onClick={handleOk}>
@@ -93,7 +64,7 @@ export const Setup = () => {
       >
         <Form
           onFinish={handleOk}
-          initialValues={user}
+          initialValues={activation}
           autoComplete="off"
           layout="vertical"
           form={form}

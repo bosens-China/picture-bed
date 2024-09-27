@@ -13,12 +13,13 @@ import {
 } from 'antd';
 
 import { ExclamationCircleFilled, InboxOutlined } from '@ant-design/icons';
-import { store } from '@/store';
 import { useDocumentVisibility, useRequest, useUpdateEffect } from 'ahooks';
 import { useMemo, useState } from 'react';
 import { uploadFiles } from 'core';
 import { UploadBody } from 'core/api/upload.ts';
 import { AxiosError } from 'axios';
+import { useAppSelector } from '@/store/hooks';
+import { activationItem } from '@/store/features/staging/selectors';
 
 const { Dragger } = MyUpload;
 
@@ -40,7 +41,7 @@ export const Upload = () => {
     isDir: false,
     percent: 0,
   });
-  const { user } = store;
+  // const { user } = store;
   const { message } = App.useApp();
   const [form] = Form.useForm<FieldType>();
   const property = Form.useWatch('property', form);
@@ -48,6 +49,8 @@ export const Upload = () => {
     setModalState({ open: false, isDir: false, percent: 0 });
     form.resetFields();
   };
+
+  const activation = useAppSelector(activationItem);
 
   const { loading, run } = useRequest(uploadFiles, {
     manual: true,
@@ -75,7 +78,7 @@ export const Upload = () => {
     const result = await form.validateFields();
     const files = result.property!.map((item): UploadBody => {
       return {
-        uid: user!.uid!,
+        uid: activation?.uid || '',
         file: item.originFileObj,
       };
     });
@@ -84,7 +87,6 @@ export const Upload = () => {
       config: {
         iteratorFn(_item, index, total) {
           console.log({ index, total });
-
           modalState.percent = ((index + 1) / total) * 100;
         },
       },
@@ -184,6 +186,7 @@ export const Upload = () => {
       {
         key: 'dir',
         label: '上传资源（文件夹）',
+        disabled: !activation?.uid,
       },
     ],
     onClick: (e) => {
@@ -205,6 +208,7 @@ export const Upload = () => {
           onClick={() => setModalState({ open: true, percent: 0 })}
           menu={menu}
           type="primary"
+          disabled={!activation?.uid}
         >
           <div className="i-catppuccin-folder-upload-open text-size-2xl cursor-pointer"></div>
           上传资源
