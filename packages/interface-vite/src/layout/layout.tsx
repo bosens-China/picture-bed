@@ -1,7 +1,7 @@
 import { Layout } from 'antd';
 import { Footer as LayoutFooter } from './footer';
 import { Header as LayoutHeader } from './header';
-import { Sider as LayoutSider } from './sider';
+import { RootSider } from './sider/root-sider';
 import { Outlet } from 'react-router-dom';
 import { useAsyncEffect } from 'ahooks';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
@@ -9,7 +9,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import { addStaging, setSelected } from '@/store/features/staging/slice';
 
-const { Content, Footer, Sider } = Layout;
+const { Content, Footer } = Layout;
 
 export const AppLayout = () => {
   const siderStyle: React.CSSProperties = {
@@ -50,10 +50,10 @@ export const AppLayout = () => {
     
     </Layout> */}
       <Layout hasSider className="h-100vh">
-        <Sider style={siderStyle}>
-          <LayoutSider></LayoutSider>
-        </Sider>
-        <Layout style={{ marginInlineStart: 200 }}>
+        <div style={siderStyle}>
+          <RootSider></RootSider>
+        </div>
+        <Layout style={{ marginInlineStart: 256 }}>
           <LayoutHeader></LayoutHeader>
           <Content>
             <Outlet />

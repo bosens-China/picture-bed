@@ -60,11 +60,18 @@ export async function runParallel<T, U>(
       });
       executing.push(e);
       if (executing.length >= maxConcurrency) {
-        await Promise.race(executing);
+        /*
+         * 失败了也无所谓，返回的就是全部状态
+         */
+        try {
+          await Promise.race(executing);
+        } catch {
+          //
+        }
       }
     }
   }
-  return Promise.all(ret);
+  return Promise.allSettled(ret);
 }
 
 /**

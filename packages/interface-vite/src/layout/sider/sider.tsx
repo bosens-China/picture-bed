@@ -4,7 +4,12 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { useMemo, useState } from 'react';
 import { setSelected } from '@/store/features/staging/slice';
 import { SiderModal } from './siderModal';
-import { DashOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
+import {
+  DashOutlined,
+  DeleteOutlined,
+  FormOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import _ from 'lodash-es';
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -49,7 +54,7 @@ export const Sider = () => {
     return [
       {
         key: 'add',
-        label: <Button>添加工作台</Button>,
+        label: <Button icon={<PlusOutlined />}>添加工作台</Button>,
         style: {
           background: '#fff',
         },

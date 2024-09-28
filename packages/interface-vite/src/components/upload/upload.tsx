@@ -14,12 +14,13 @@ import {
 
 import { ExclamationCircleFilled, InboxOutlined } from '@ant-design/icons';
 import { useDocumentVisibility, useRequest, useUpdateEffect } from 'ahooks';
-import { useMemo, useState } from 'react';
-import { uploadFiles } from 'core';
+import { useEffect, useMemo, useState } from 'react';
+import { uploadFiles, UploadFilesBody } from 'core';
 import { UploadBody } from 'core/api/upload.ts';
-import { AxiosError } from 'axios';
 import { useAppSelector } from '@/store/hooks';
 import { activationItem } from '@/store/features/staging/selectors';
+import { getErrorMsg } from '@/utils/error';
+import './style.less';
 
 const { Dragger } = MyUpload;
 
@@ -34,45 +35,114 @@ export const Upload = () => {
   const [modalState, setModalState] = useState<{
     open: boolean;
     isDir?: boolean;
-    // 百分比
-    percent: number;
   }>({
     open: false,
     isDir: false,
-    percent: 0,
   });
   // const { user } = store;
   const { message } = App.useApp();
   const [form] = Form.useForm<FieldType>();
+  const { loading, run } = useRequest(
+    (obj: UploadFilesBody) => {
+      return uploadFiles({
+        ...obj,
+        axiosConfig: {
+          onUploadProgress(progressEvent, body) {
+            setSchedule((obj) => {
+              const file = body.file as unknown as UploadFile;
+              obj[file.uid] = progressEvent.progress || 0;
+
+              return { ...obj };
+            });
+          },
+        },
+        config: {
+          messageCallback: ({ item, err, data }) => {
+            form.setFieldValue(
+              'property',
+              property?.map((f) => {
+                const file = item.file as unknown as UploadFile;
+                if (f.uid === file.uid) {
+                  f.status = data ? 'done' : 'error';
+                  if (err) {
+                    f.response = getErrorMsg(err);
+                  }
+                }
+
+                return { ...f };
+              }),
+            );
+          },
+        },
+      });
+    },
+    {
+      manual: true,
+      /*
+       * 将上传的资源全部重置为loading
+       */
+      onBefore() {
+        form.setFieldValue(
+          'property',
+          property?.map((f) => {
+            return {
+              ...f,
+              status: 'uploading',
+            };
+          }),
+        );
+      },
+      onSuccess(data) {
+        message.destroy();
+        if (data.every((f) => f.status === 'fulfilled')) {
+          message.success(`上传成功。`);
+          return;
+        }
+        message.warning(`未全部上传成功，请点击文件查看具体警告信息。`);
+      },
+    },
+  );
+
   const property = Form.useWatch('property', form);
+  const [schedule, setSchedule] = useState<Record<string, number>>({});
+
+  /**
+   * 返回整体的上传进度
+   */
+  const [percent, successPercent] = useMemo(() => {
+    const total = property?.length || 0;
+    const proportion = 100 / total;
+    const current = Object.values(schedule).reduce((x, y) => {
+      return x + y;
+    }, 0);
+    // 计算完成的进度
+    const currentSuccess = Object.keys(schedule)
+      .filter((k) => {
+        return property?.find((f) => f.uid === k)?.status === 'done';
+      })
+      .map((f) => schedule[f])
+      .reduce((x, y) => x + y, 0);
+
+    return [current * proportion, currentSuccess * proportion];
+  }, [schedule, property]);
+
+  useEffect(() => {
+    if (percent === 100 && loading) {
+      message.open({
+        type: 'loading',
+        content: '上传成功，正在进行上传校验...',
+        duration: 0,
+      });
+    }
+  }, [percent, loading, message]);
+
   const handleCancel = () => {
-    setModalState({ open: false, isDir: false, percent: 0 });
+    setModalState({ open: false, isDir: false });
     form.resetFields();
+    setSchedule({});
   };
 
   const activation = useAppSelector(activationItem);
-
-  const { loading, run } = useRequest(uploadFiles, {
-    manual: true,
-    onSuccess() {
-      message.success(`上传成功`);
-    },
-    onError(e) {
-      const err = e as AxiosError;
-      modalState.percent = 0;
-      switch (err.code) {
-        case 'ERR_NETWORK':
-          message.error(
-            `网络错误访问错误，可能是cors问题也可能是服务端接口出现问题。`,
-          );
-
-          return;
-
-        default:
-          message.error(e.message);
-      }
-    },
-  });
 
   const handleOk = async () => {
     const result = await form.validateFields();
@@ -82,14 +152,10 @@ export const Upload = () => {
         file: item.originFileObj,
       };
     });
+    setSchedule({});
+
     run({
       files,
-      config: {
-        iteratorFn(_item, index, total) {
-          console.log({ index, total });
-          modalState.percent = ((index + 1) / total) * 100;
-        },
-      },
     });
   };
 
@@ -139,7 +205,7 @@ export const Upload = () => {
           : `检测到剪切板包含图片资源，是否将相关资源上传到待上传资源列表？`,
         onOk() {
           if (!modalState.open) {
-            setModalState({ open: true, percent: 0 });
+            setModalState({ open: true });
           }
           // 赋值
         },
@@ -192,7 +258,7 @@ export const Upload = () => {
     onClick: (e) => {
       switch (e.key) {
         case 'dir':
-          setModalState({ open: true, isDir: true, percent: 0 });
+          setModalState({ open: true, isDir: true });
           break;
 
         default:
@@ -205,7 +271,7 @@ export const Upload = () => {
     <>
       <Tooltip title="上传资源" placement={'leftTop'}>
         <Dropdown.Button
-          onClick={() => setModalState({ open: true, percent: 0 })}
+          onClick={() => setModalState({ open: true })}
           menu={menu}
           type="primary"
           disabled={!activation?.uid}
@@ -247,6 +313,7 @@ export const Upload = () => {
                 valuePropName="fileList"
                 label={item.label}
                 name={item.name}
+                className="y_upload"
                 getValueFromEvent={(e) => {
                   if (Array.isArray(e)) {
                     return e;
@@ -261,7 +328,7 @@ export const Upload = () => {
                   },
                 ]}
               >
-                <Dragger {...{ ...uploadProps, ...item }}>
+                <Dragger {...{ ...uploadProps, ...item, disabled: loading }}>
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                   </p>
@@ -275,11 +342,16 @@ export const Upload = () => {
           })}
 
           <Form.Item label="上传进度">
-            <Progress
+            {/* <Progress
               steps={property?.length}
               percent={modalState.percent}
               size={[20, 30]}
               className={!property?.length ? 'op-0' : ''}
+            /> */}
+            <Progress
+              size={{ height: 15 }}
+              percent={loading ? percent : successPercent}
+              success={{ percent: successPercent }}
             />
           </Form.Item>
         </Form>

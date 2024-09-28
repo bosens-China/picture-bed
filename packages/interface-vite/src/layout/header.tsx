@@ -1,7 +1,6 @@
 import { Space } from 'antd';
 
 import { Upload } from '@/components/upload/upload';
-import { Setup } from '@/components/setup/setup';
 
 export const Header = () => {
   return (
@@ -30,7 +29,6 @@ export const Header = () => {
       </a> */}
       <div className="flex-1"></div>
       <Space size="large">
-        <Setup></Setup>
         <Upload></Upload>
       </Space>
     </div>

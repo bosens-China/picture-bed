@@ -1,10 +1,12 @@
 // https://playground.z.wiki/
 
+import { AxiosRequestConfig } from 'axios';
 import { instance } from '../utils/request';
 
 export interface RequestParameters {
   uid: string;
-  page?: number;
+
+  current?: number;
   pageSize?: number;
 }
 
@@ -30,19 +32,29 @@ export interface Daum {
 
 /**
  * 获取已上传成功的文件列表
+ * 上传的格式，符合https://ahooks.js.org/zh-CN/hooks/use-pagination要求
  *
  * @param {RequestParameters} body
  * @return {*}
  */
-export const imgHistory = async (body: RequestParameters) => {
-  const { uid, page = 1, pageSize = 10 } = body;
-  const { data } = await instance.get<ResponseParameters>(`/img/history`, {
+export const imgHistory = async (
+  body: RequestParameters,
+  config?: AxiosRequestConfig<unknown>,
+) => {
+  const { uid, current = 1, pageSize = 10 } = body;
+  const { data } = await instance<ResponseParameters>({
+    url: `/img/history`,
+    ...config,
+    method: 'get',
     params: {
       uid,
-      page,
+      page: current,
       pageSize,
     },
   });
 
-  return data;
+  return {
+    ...data,
+    list: data.data,
+  };
 };

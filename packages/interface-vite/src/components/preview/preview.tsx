@@ -1,3 +1,4 @@
+import { Avatar } from 'antd';
 import { FC, useMemo } from 'react';
 
 interface Props {
@@ -43,7 +44,7 @@ export const Preview: FC<Props> = ({ url }) => {
       //   );
 
       default:
-        return <p>Unsupported file type: {url}</p>;
+        return <Avatar gap={16}>{type}</Avatar>;
     }
   }, [url]);
 };

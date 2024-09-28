@@ -8,3 +8,18 @@ export const instance = axios.create({
   //   origin: baseURL,
   // },
 });
+
+instance.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    try {
+      const msg = error.response.data.message;
+      error.message = msg;
+    } catch {
+      //
+    }
+    return Promise.reject(error);
+  },
+);

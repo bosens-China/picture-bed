@@ -1,6 +1,8 @@
 // import { AxiosError } from 'axios';
+
 import { instance } from '../utils/request';
 import { fileFromPath } from 'formdata-node/file-from-path';
+import { axiosConfig } from '../main';
 
 /**
  * 上传接口所需参数
@@ -55,7 +57,7 @@ export interface UploadReturnStructure {
   md5: string;
 }
 
-export async function upload(body: UploadBody) {
+export async function upload(body: UploadBody, config?: axiosConfig) {
   if ([body.file, body.filePath].every((f) => !f)) {
     throw new Error('file or filePath is required');
   }
@@ -69,11 +71,16 @@ export async function upload(body: UploadBody) {
   form.append('fileName', fileName);
   form.append('file', file);
   form.append('uid', uid);
-  // try {
-  const { data } = await instance.post<UploadReturnStructure>(
-    `/img/upload`,
-    form,
-  );
+  const { onUploadProgress, ...rest } = config || {};
+  const { data } = await instance<UploadReturnStructure>({
+    url: `/img/upload`,
+    ...rest,
+    method: 'post',
+    data: form,
+    onUploadProgress(progressEvent) {
+      onUploadProgress?.(progressEvent, body);
+    },
+  });
   return data;
   // } catch (e) {
   //   if (e instanceof AxiosError) {
