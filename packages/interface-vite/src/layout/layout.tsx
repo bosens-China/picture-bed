@@ -53,7 +53,7 @@ export const AppLayout = () => {
         <div style={siderStyle}>
           <RootSider></RootSider>
         </div>
-        <Layout style={{ marginInlineStart: 256 }}>
+        <Layout style={{ marginInlineStart: 250 }}>
           <LayoutHeader></LayoutHeader>
           <Content>
             <Outlet />

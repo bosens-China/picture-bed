@@ -125,6 +125,9 @@ importers:
       '@fingerprintjs/fingerprintjs':
         specifier: ^4.5.0
         version: 4.5.0
+      '@iconify-json/vscode-icons':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@reduxjs/toolkit':
         specifier: ^2.2.7
         version: 2.2.7(react-redux@9.1.2(@types/react@18.3.8)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
@@ -946,6 +949,12 @@ packages:
     resolution:
       {
         integrity: sha512-VfpYog398nzQyxaIm7fDCXS8id3Jgfzzq+f0QIfGmXmHGITP0u1I6aUDPhvkSa5UYH3fgy8FakmjxSI9eID8aA==,
+      }
+
+  '@iconify-json/vscode-icons@1.2.2':
+    resolution:
+      {
+        integrity: sha512-bTpT0HJDRqGkxQv8oiETNHLEnBZpnA1QaRD35CQyO7M7qgWVLx2xwn/lK6e4waojmlPC3ckMBx3WFIUUn0/Jdg==,
       }
 
   '@iconify/types@2.0.0':
@@ -6136,6 +6145,10 @@ snapshots:
   '@humanwhocodes/retry@0.3.0': {}
 
   '@iconify-json/catppuccin@1.2.3':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/vscode-icons@1.2.2':
     dependencies:
       '@iconify/types': 2.0.0
 

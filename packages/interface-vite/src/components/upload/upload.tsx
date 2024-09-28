@@ -21,14 +21,13 @@ import { useAppSelector } from '@/store/hooks';
 import { activationItem } from '@/store/features/staging/selectors';
 import { getErrorMsg } from '@/utils/error';
 import './style.less';
+import { checkClipboard } from './utils';
 
 const { Dragger } = MyUpload;
 
 type FieldType = {
   property?: UploadFile[];
 };
-
-const { confirm } = Modal;
 
 export const Upload = () => {
   // Modal 相关状态
@@ -40,7 +39,8 @@ export const Upload = () => {
     isDir: false,
   });
   // const { user } = store;
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
+
   const [form] = Form.useForm<FieldType>();
   const { loading, run } = useRequest(
     (obj: UploadFilesBody) => {
@@ -104,6 +104,7 @@ export const Upload = () => {
   );
 
   const property = Form.useWatch('property', form);
+
   const [schedule, setSchedule] = useState<Record<string, number>>({});
 
   /**
@@ -123,7 +124,9 @@ export const Upload = () => {
       .map((f) => schedule[f])
       .reduce((x, y) => x + y, 0);
 
-    return [current * proportion, currentSuccess * proportion];
+    return [current * proportion, currentSuccess * proportion].map(
+      (f) => +f.toFixed(2),
+    );
   }, [schedule, property]);
 
   useEffect(() => {
@@ -162,30 +165,6 @@ export const Upload = () => {
   const documentVisibility = useDocumentVisibility();
 
   /*
-   * 读取剪切板
-   */
-  const checkClipboard = async (): Promise<Blob[]> => {
-    try {
-      // 请求剪切板权限
-      const clipboardItems = await navigator.clipboard.read();
-
-      const files: Promise<Blob>[] = [];
-      for (const clipboardItem of clipboardItems) {
-        // 检查剪切板是否包含图片
-        for (const type of clipboardItem.types) {
-          if (type.startsWith('image/')) {
-            const blob = clipboardItem.getType(type);
-            files.push(blob);
-          }
-        }
-      }
-      return await Promise.all(files);
-    } catch {
-      return [];
-    }
-  };
-
-  /*
    * 页面变动监听剪切板的变化，读取所有图片资源来上传
    */
   useUpdateEffect(() => {
@@ -194,10 +173,11 @@ export const Upload = () => {
     }
     (async () => {
       const files = await checkClipboard();
+
       if (!files.length) {
         return;
       }
-      confirm({
+      modal.confirm({
         title: '上传提醒?',
         icon: <ExclamationCircleFilled />,
         content: !modalState.open
@@ -208,6 +188,10 @@ export const Upload = () => {
             setModalState({ open: true });
           }
           // 赋值
+          form.setFieldValue(
+            'property',
+            files.map((f) => new File([f.blob], f.fileName)),
+          );
         },
         onCancel() {
           //

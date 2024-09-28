@@ -25,6 +25,9 @@ if (rootEl) {
               footerPadding: 0,
               siderBg: '#fff',
             },
+            Card: {
+              paddingLG: 12,
+            },
           },
         }}
       >

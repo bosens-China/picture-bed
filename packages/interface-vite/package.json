@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
     "@fingerprintjs/fingerprintjs": "^4.5.0",
+    "@iconify-json/vscode-icons": "^1.2.2",
     "@reduxjs/toolkit": "^2.2.7",
     "@unocss/reset": "^0.62.4",
     "ahooks": "^3.8.1",
