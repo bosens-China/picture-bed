@@ -171,6 +171,9 @@ importers:
       '@iconify-json/catppuccin':
         specifier: ^1.2.3
         version: 1.2.3
+      '@iconify-json/mdi':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -949,6 +952,12 @@ packages:
     resolution:
       {
         integrity: sha512-VfpYog398nzQyxaIm7fDCXS8id3Jgfzzq+f0QIfGmXmHGITP0u1I6aUDPhvkSa5UYH3fgy8FakmjxSI9eID8aA==,
+      }
+
+  '@iconify-json/mdi@1.2.0':
+    resolution:
+      {
+        integrity: sha512-E9/3l5Syg3wfuarorFodhn4s8YorxhH3U3U20LaNBNiqw1kFNIDWhF6HymuzAD35k7RH0OBasJ+ZUyFtVVV6eg==,
       }
 
   '@iconify-json/vscode-icons@1.2.2':
@@ -6145,6 +6154,10 @@ snapshots:
   '@humanwhocodes/retry@0.3.0': {}
 
   '@iconify-json/catppuccin@1.2.3':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/mdi@1.2.0':
     dependencies:
       '@iconify/types': 2.0.0
 
