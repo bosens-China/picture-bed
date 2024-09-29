@@ -1,7 +1,6 @@
 import {
   Form,
   Modal,
-  Tooltip,
   Upload as MyUpload,
   UploadProps,
   App,
@@ -12,7 +11,12 @@ import {
   Progress,
 } from 'antd';
 
-import { ExclamationCircleFilled, InboxOutlined } from '@ant-design/icons';
+import {
+  ExclamationCircleFilled,
+  FolderAddOutlined,
+  FolderOpenOutlined,
+  InboxOutlined,
+} from '@ant-design/icons';
 import { useDocumentVisibility, useRequest, useUpdateEffect } from 'ahooks';
 import { useEffect, useMemo, useState } from 'react';
 import { uploadFiles, UploadFilesBody } from 'core';
@@ -236,34 +240,29 @@ export const Upload = () => {
       {
         key: 'dir',
         label: '上传资源（文件夹）',
+        icon: <FolderOpenOutlined />,
         disabled: !activation?.uid,
+        onClick: () => {
+          setModalState({ open: true, isDir: true });
+        },
       },
     ],
-    onClick: (e) => {
-      switch (e.key) {
-        case 'dir':
-          setModalState({ open: true, isDir: true });
-          break;
-
-        default:
-          break;
-      }
-    },
   };
 
   return (
     <>
-      <Tooltip title="上传资源" placement={'leftTop'}>
-        <Dropdown.Button
-          onClick={() => setModalState({ open: true })}
-          menu={menu}
+      <Dropdown menu={menu}>
+        <Button
           type="primary"
+          onClick={() => setModalState({ open: true })}
           disabled={!activation?.uid}
+          icon={<FolderAddOutlined />}
         >
-          <div className="i-catppuccin-folder-upload-open text-size-2xl cursor-pointer"></div>
           上传资源
-        </Dropdown.Button>
-      </Tooltip>
+        </Button>
+
+        {/* <div className="i-catppuccin-folder-upload-open text-size-2xl cursor-pointer"></div> */}
+      </Dropdown>
 
       <Modal
         title="上传资源"
