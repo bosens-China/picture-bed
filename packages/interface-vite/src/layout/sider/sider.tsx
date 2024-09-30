@@ -104,6 +104,7 @@ export const Sider = () => {
         selectedKeys={selected ? [selected] : []}
         mode="inline"
         items={items}
+        className="w-200px"
       />
       <SiderModal edit={edit} setEdit={setEdit} open={open} setOpen={setOpen} />
     </>

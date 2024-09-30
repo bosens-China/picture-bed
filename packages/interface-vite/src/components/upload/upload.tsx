@@ -279,7 +279,7 @@ export const Upload = () => {
             取消
           </Button>,
           <Button key="ok" type="primary" onClick={handleOk} loading={loading}>
-            确定
+            上传
           </Button>,
         ]}
       >
