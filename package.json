@@ -22,6 +22,6 @@
   "scripts": {
     "prepare": "husky",
     "check": "eslint . --ignore-pattern .gitignore .",
-    "typescript-check": "tsc --noEmit"
+    "typescript-check": "tsc -b --noEmit"
   }
 }
