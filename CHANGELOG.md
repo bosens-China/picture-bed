@@ -7,11 +7,11 @@ All notable changes to this project will be documented in this file.
 ### 🚀 Features
 
 - 初始化项目结构
-- 改用 vite 开发，对上传资源和设置静态样式编写
+- 改用vite开发，对上传资源和设置静态样式编写
 - 添加剪切板逻辑
-- 关闭 hmr 更新
+- 关闭hmr更新
 - 添加文档计划，对剪切板的异步改为并发
-- 添加设置和 content 静态内容
+- 添加设置和content静态内容
 - 初始化不会使用剪切板，对用户初始进入进行配置
 - 客户端初始化
 - 修改上传组件为按钮多选形式
@@ -22,6 +22,10 @@ All notable changes to this project will be documented in this file.
 - 预览功能完善，对卡片右键功能增强
 - 左侧导航栏重构，添加设置静态界面
 - 添加恢复初始设置，对工作台概念改为用户，对编辑弹窗判断重复问题修改
+
+### 🎨 Styling
+
+- 修改左侧布局宽度和上传弹窗文字
 
 ### ⚙️ Miscellaneous Tasks
 
