@@ -1,19 +1,21 @@
 import { Spin } from 'antd';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { setSelected } from '@/store/features/users/slice';
 
 export const Empty = () => {
-  const { staging } = useAppSelector((state) => state.staging);
-
+  const { users } = useAppSelector((state) => state.users);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!staging.length) {
+    if (!users.length) {
       return;
     }
     // 如果存在值则直接跳转走
-    navigate(`/${staging[0].key}`);
-  }, [staging, navigate]);
+    navigate(`/${users[0].key}`);
+    dispatch(setSelected(`${users[0].key}`));
+  }, [users, navigate, dispatch]);
 
   return (
     <div className="p-12px">

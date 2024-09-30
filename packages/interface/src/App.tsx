@@ -1,5 +1,3 @@
-/* eslint-disable check-file/filename-naming-convention */
-
 import { Layout, Space } from 'antd';
 import { Upload } from './upload/upload';
 import { Setup } from './setup/setup';

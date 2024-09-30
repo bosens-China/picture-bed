@@ -10,12 +10,12 @@ export type MenuItem = {
 
 export interface State {
   /**
-   * 工作台的列表
+   * 用户的列表
    *
    * @type {Array<MenuItem>}
    * @memberof State
    */
-  staging: Array<MenuItem>;
+  users: Array<MenuItem>;
   /**
    * 当前选中项
    *
@@ -26,27 +26,26 @@ export interface State {
 }
 
 const initialState: State = {
-  staging: [],
+  users: [],
 };
 
 export const staging = createSlice({
   name: 'staging',
   initialState,
   reducers: {
-    addStaging: (state, action: PayloadAction<MenuItem>) => {
-      state.staging = _.uniqBy([...state.staging, action.payload], 'key');
+    addUser: (state, action: PayloadAction<MenuItem>) => {
+      state.users = _.uniqBy([...state.users, action.payload], 'key');
     },
-    removeStaging: (state, action: PayloadAction<string>) => {
-      state.staging = state.staging.filter(
-        (item) => item.key !== action.payload,
-      );
+    removeUser: (state, action: PayloadAction<string>) => {
+      state.users = state.users.filter((item) => item.key !== action.payload);
     },
-    clearStaging: (state) => {
-      state.staging = [];
+    clearUser: (state) => {
+      state.users = [];
     },
     setSelected: (state, action: PayloadAction<State['selected']>) => {
       state.selected = action.payload;
     },
+
     // increment: (state) => {
     //   // Redux Toolkit allows us to write "mutating" logic in reducers. It
     //   // doesn't actually mutate the state because it uses the Immer library,
@@ -64,7 +63,6 @@ export const staging = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addStaging, removeStaging, clearStaging, setSelected } =
-  staging.actions;
+export const { addUser, removeUser, clearUser, setSelected } = staging.actions;
 
 export default staging.reducer;

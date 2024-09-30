@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import staging from './features/staging/slice';
+import users from './features/users/slice';
 import { getStore, setStore } from './utils';
 
 export const store = configureStore({
   reducer: {
-    staging,
+    users,
   },
   preloadedState: getStore(),
 });

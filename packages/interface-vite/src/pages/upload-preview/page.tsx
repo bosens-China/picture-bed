@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import { imgHistory } from 'core/api/page.js';
 import { useAppSelector } from '@/store/hooks';
-import { activationItem } from '@/store/features/staging/selectors';
+import { activationItem } from '@/store/features/users/selectors';
 import { useMemo } from 'react';
 import { Preview } from '@/components/preview/preview';
 import dayjs from 'dayjs';
@@ -24,6 +24,7 @@ import './style.less';
 import { getErrorMsg } from '@/utils/error';
 import { getVideoUrl } from './utils';
 import { CopyOutlined } from '@ant-design/icons';
+import classnames from 'classnames';
 
 const { Text } = Typography;
 const { Meta } = Card;
@@ -57,8 +58,10 @@ export const UploadPreview = () => {
     <div className="p-12px upload-preview  flex flex-col">
       <Spin
         spinning={loading}
-        wrapperClassName="flex-1 overflow-x-hidden overflow-y-auto"
-        className=""
+        wrapperClassName={classnames([
+          `flex-1 overflow-x-hidden overflow-y-auto`,
+          { hidden: !list?.length },
+        ])}
       >
         <Row gutter={[8, 16]} className="my-12px">
           {list?.map((item) => {

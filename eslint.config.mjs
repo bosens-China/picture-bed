@@ -62,6 +62,8 @@ export default [
   {
     rules: {
       'react/react-in-jsx-scope': 'off',
+      'no-console': 'error',
+      'no-debugger': 'error',
     },
   },
 ];

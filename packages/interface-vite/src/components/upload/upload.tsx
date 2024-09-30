@@ -22,7 +22,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { uploadFiles, UploadFilesBody } from 'core';
 import { UploadBody } from 'core/api/upload.ts';
 import { useAppSelector } from '@/store/hooks';
-import { activationItem } from '@/store/features/staging/selectors';
+import { activationItem } from '@/store/features/users/selectors';
 import { getErrorMsg } from '@/utils/error';
 import './style.less';
 import { checkClipboard } from './utils';

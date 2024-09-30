@@ -1,14 +1,16 @@
 import type { MenuProps } from 'antd';
-import { ConfigProvider, Menu } from 'antd';
+import { App, ConfigProvider, Menu } from 'antd';
 import { useMemo, useState } from 'react';
 import {
   AppstoreOutlined,
+  ClearOutlined,
   DashOutlined,
   QuestionCircleOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
 import { Sider } from './sider';
 import { Setup } from '@/components/setup/setup';
+import { setStore } from '@/store/utils';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -17,6 +19,7 @@ export interface Edit {
 }
 
 export const RootSider = () => {
+  const { modal } = App.useApp();
   const items = useMemo<MenuItem[]>(() => {
     return [
       {
@@ -40,12 +43,11 @@ export const RootSider = () => {
           {
             label: '使用说明',
             icon: <div className="i-mdi-comment-question"></div>,
-            key: 'SettingOutlined',
           },
           {
             label: '设置',
             icon: <SettingOutlined />,
-            key: 'SettingOutlined',
+
             onClick: () => {
               setSetupOpen(true);
             },
@@ -62,10 +64,32 @@ export const RootSider = () => {
             icon: <QuestionCircleOutlined />,
             key: 'QuestionCircleOutlined',
           },
+          {
+            label: '恢复默认设置',
+            icon: <ClearOutlined />,
+
+            onClick: () => {
+              modal.confirm({
+                title: '恢复默认设置',
+                content: '恢复默认设置会把所有设置会滚到最初状态，请谨慎操作。',
+                onOk: () => {
+                  setStore(undefined);
+                  window.location.reload();
+                },
+                okText: '确定',
+                cancelText: '取消',
+              });
+            },
+          },
         ],
       },
-    ];
-  }, []);
+    ].map((f, index) => {
+      return {
+        ...f,
+        key: index,
+      };
+    });
+  }, [modal]);
 
   const onClick: MenuProps['onClick'] = () => {};
   return (

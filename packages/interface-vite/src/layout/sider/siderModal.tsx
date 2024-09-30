@@ -3,10 +3,10 @@ import { FC, useMemo } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 
 import {
-  addStaging,
+  addUser,
   MenuItem as FieldType,
   setSelected,
-} from '@/store/features/staging/slice';
+} from '@/store/features/users/slice';
 import { Edit } from './sider';
 
 interface Props {
@@ -23,7 +23,7 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
 
   const [form] = Form.useForm<FieldType>();
 
-  const { staging } = useAppSelector((state) => state.staging);
+  const { users } = useAppSelector((state) => state.users);
 
   const handleCancel = () => {
     setOpen(false);
@@ -33,27 +33,27 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
 
   const handleOk = async () => {
     const values = await form.validateFields();
-    const key = values.uid;
+    values.uid ||= values.label as string;
+    values.key = values.uid;
     dispatch(
-      addStaging({
+      addUser({
         ...values,
-        key,
       }),
     );
     // 激活
-    dispatch(setSelected(key));
+    dispatch(setSelected(values.key));
 
     handleCancel();
     message.success('添加成功');
   };
 
   const title = useMemo(() => {
-    return edit ? `编辑工作台` : `添加工作台`;
+    return edit.key ? `编辑用户` : `添加用户`;
   }, [edit]);
 
   const initialValues = useMemo(() => {
-    return staging.find((f) => f.key === edit.key);
-  }, [edit.key, staging]);
+    return users.find((f) => f.key === edit.key);
+  }, [edit.key, users]);
 
   return (
     <>
@@ -73,24 +73,30 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
           initialValues={initialValues}
         >
           <Form.Item<FieldType>
-            label="工作台名称"
+            label="名称"
             name="label"
             rules={[
               {
                 required: true,
-                message: '请输入工作台名称!',
+                message: '请输入用户名称!',
               },
               {
                 validator(_rule, value, callback) {
-                  if (staging.find((f) => f.label === value)) {
-                    return callback(`工作台名称重复。`);
+                  /*
+                   * 新增则全部校验，编辑则去除自身校验更改名称是否重复
+                   */
+                  const arr = users
+                    .filter((f) => f.key !== edit.key)
+                    .map((f) => f.label);
+                  if (arr.includes(value)) {
+                    return callback(`用户名称重复。`);
                   }
                   return callback();
                 },
               },
             ]}
           >
-            <Input placeholder="用于在左侧工作台展示名称"></Input>
+            <Input placeholder="用于在左侧展示名称"></Input>
           </Form.Item>
           <Form.Item<FieldType>
             label={
@@ -110,7 +116,10 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
                   if (!value) {
                     return callback();
                   }
-                  if (staging.find((f) => f.key === value)) {
+                  const arr = users
+                    .filter((f) => f.key !== edit.key)
+                    .map((f) => f.uid);
+                  if (arr.includes(value)) {
                     return callback(`用户标识重复。`);
                   }
                   return callback();

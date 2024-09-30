@@ -1,0 +1,8 @@
+{
+  "references": [
+    { "path": "./packages/interface-vite" },
+    { "path": "./packages/core" },
+    { "path": "./packages/interface-electron" }
+  ],
+  "files": []
+}

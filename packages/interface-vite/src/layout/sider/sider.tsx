@@ -2,7 +2,7 @@ import type { MenuProps } from 'antd';
 import { Button, Dropdown, Menu } from 'antd';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { useMemo, useState } from 'react';
-import { setSelected } from '@/store/features/staging/slice';
+import { setSelected } from '@/store/features/users/slice';
 import { SiderModal } from './siderModal';
 import {
   DashOutlined,
@@ -19,7 +19,7 @@ export interface Edit {
 }
 
 export const Sider = () => {
-  const { staging, selected } = useAppSelector((state) => state.staging);
+  const { users, selected } = useAppSelector((state) => state.users);
   const dispatch = useAppDispatch();
 
   const [edit, setEdit] = useState<Edit>({});
@@ -54,12 +54,12 @@ export const Sider = () => {
     return [
       {
         key: 'add',
-        label: <Button icon={<PlusOutlined />}>添加工作台</Button>,
+        label: <Button icon={<PlusOutlined />}>添加用户</Button>,
         style: {
           background: '#fff',
         },
       },
-      ...staging.map((f) => {
+      ...users.map((f) => {
         return {
           ...f,
           label: (
@@ -82,7 +82,7 @@ export const Sider = () => {
         };
       }),
     ];
-  }, [operateItems, staging]);
+  }, [operateItems, users]);
 
   const [open, setOpen] = useState(false);
 

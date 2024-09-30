@@ -20,6 +20,8 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0"
   },
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "check": "eslint . --ignore-pattern .gitignore .",
+    "typescript-check": "tsc --noEmit"
   }
 }

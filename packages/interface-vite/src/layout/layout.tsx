@@ -5,9 +5,9 @@ import { RootSider } from './sider/root-sider';
 import { Outlet } from 'react-router-dom';
 import { useAsyncEffect } from 'ahooks';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
-
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { addStaging, setSelected } from '@/store/features/staging/slice';
+import { addUser } from '@/store/features/users/slice';
+import { useNavigate } from 'react-router-dom';
 
 const { Content, Footer } = Layout;
 
@@ -23,21 +23,20 @@ export const AppLayout = () => {
     scrollbarColor: 'unset',
   };
   const dispatch = useAppDispatch();
-  const { staging } = useAppSelector((state) => state.staging);
+  const navigate = useNavigate();
+  const { users } = useAppSelector((state) => state.users);
 
   // 初始化情况下对一些值进行默认设定
   useAsyncEffect(async () => {
-    if (!staging.length) {
+    if (!users.length) {
       const res = await FingerprintJS.load().then((res) => {
         return res.get();
       });
 
-      dispatch(
-        addStaging({ label: '主工作台', key: 'main', uid: res.visitorId }),
-      );
-      dispatch(setSelected('main'));
+      dispatch(addUser({ label: '默认用户', key: 'main', uid: res.visitorId }));
+      navigate('/');
     }
-  }, []);
+  }, [users.length]);
 
   return (
     <>

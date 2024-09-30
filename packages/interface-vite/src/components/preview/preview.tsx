@@ -9,7 +9,15 @@ export const Preview: FC<Props> = ({ url, contentType }) => {
     const [, type] = contentType.split('/').map((f) => f.toLowerCase());
     const fileType = url.split('.').pop()?.toLowerCase();
     if (contentType.includes('image')) {
-      return <img className="h-140px! object-fill" src={url} alt={url} />;
+      return (
+        <div className="h-140px flex! justify-center items-center">
+          <img
+            className="h-auto! object-fill w-auto! min-w-48px"
+            src={url}
+            alt={url}
+          />
+        </div>
+      );
     }
     if (contentType.includes('video')) {
       return (
@@ -32,7 +40,7 @@ export const Preview: FC<Props> = ({ url, contentType }) => {
 
     return (
       <div className="h-140px flex! justify-center items-center">
-        <Avatar shape="square" size={140}>
+        <Avatar shape="square" size={140} className="mt-12px!">
           {fileType ? `${fileType}` : `.${type}`}
         </Avatar>
       </div>
