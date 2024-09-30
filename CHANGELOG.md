@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - 添加左侧其他层级布局，对上传逻辑完成
 - 预览功能完善，对卡片右键功能增强
 - 左侧导航栏重构，添加设置静态界面
+- 添加恢复初始设置，对工作台概念改为用户，对编辑弹窗判断重复问题修改
 
 ### ⚙️ Miscellaneous Tasks
 
