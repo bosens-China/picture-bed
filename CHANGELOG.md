@@ -22,6 +22,8 @@ All notable changes to this project will be documented in this file.
 - 预览功能完善，对卡片右键功能增强
 - 左侧导航栏重构，添加设置静态界面
 - 添加恢复初始设置，对工作台概念改为用户，对编辑弹窗判断重复问题修改
+- 上传文件部分逻辑重构，让其避免vite打包node的相关依赖
+- 添加环境区分接口前缀
 
 ### 🎨 Styling
 
