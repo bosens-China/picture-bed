@@ -1,5 +1,5 @@
 import { App, Form, Input, Modal, Space, Tag, Tooltip } from 'antd';
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 
 import {
@@ -8,6 +8,7 @@ import {
   setSelected,
 } from '@/store/features/users/slice';
 import { Edit } from './sider';
+import { CaretDownFilled, CaretUpFilled } from '@ant-design/icons';
 
 interface Props {
   open: boolean;
@@ -55,6 +56,8 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
     return users.find((f) => f.key === edit.key);
   }, [edit.key, users]);
 
+  const [expand, setExpand] = useState(false);
+
   return (
     <>
       <Modal
@@ -98,6 +101,15 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
           >
             <Input placeholder="用于在左侧展示名称"></Input>
           </Form.Item>
+
+          <div
+            className="cursor-pointer my-12px flex items-center"
+            onClick={() => setExpand(!expand)}
+          >
+            <span className="mr-6px">{!expand ? '展开' : '收起'}</span>
+            {!expand ? <CaretDownFilled /> : <CaretUpFilled />}
+          </div>
+
           <Form.Item<FieldType>
             label={
               <Space align="center">
@@ -126,6 +138,7 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
                 },
               },
             ]}
+            className={!expand ? 'op-0 pos-absolute z--1' : ''}
           >
             <Input placeholder="用于区分用户信息所使用，不同用户上传的资源文件不同"></Input>
           </Form.Item>

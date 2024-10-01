@@ -12,7 +12,7 @@ export const Preview: FC<Props> = ({ url, contentType }) => {
       return (
         <div className="h-140px flex! justify-center items-center">
           <img
-            className="h-auto! object-fill w-auto! min-w-48px"
+            className="h-auto! object-fill w-auto! min-w-48px max-h-140px!"
             src={url}
             alt={url}
           />
@@ -39,8 +39,8 @@ export const Preview: FC<Props> = ({ url, contentType }) => {
     }
 
     return (
-      <div className="h-140px flex! justify-center items-center">
-        <Avatar shape="square" size={140} className="mt-12px!">
+      <div className="h-140px flex! justify-center items-center p-t-15px">
+        <Avatar shape="square" size={140}>
           {fileType ? `${fileType}` : `.${type}`}
         </Avatar>
       </div>

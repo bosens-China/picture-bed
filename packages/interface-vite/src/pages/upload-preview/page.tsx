@@ -1,4 +1,4 @@
-import { usePagination } from 'ahooks';
+import { usePagination, useScroll } from 'ahooks';
 import {
   App,
   Card,
@@ -17,7 +17,7 @@ import {
 import { imgHistory } from 'core/api/page.js';
 import { useAppSelector } from '@/store/hooks';
 import { activationItem } from '@/store/features/users/selectors';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Preview } from '@/components/preview/preview';
 import dayjs from 'dayjs';
 import './style.less';
@@ -27,6 +27,7 @@ import { CopyOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { EventConent } from '@/App';
 import { EventName } from '@/hooks/use-event/event-name';
+import { useCssVariables } from '@/hooks/use-css-variables';
 
 const { Text } = Typography;
 const { Meta } = Card;
@@ -63,10 +64,24 @@ export const UploadPreview = () => {
     });
   }, [data?.list]);
 
+  const getDOm = () => {
+    return document.querySelector('.upload-preview .overflow-y-auto');
+  };
+  const position = useScroll(getDOm());
+
+  useCssVariables('--scroll-top', `${position?.top || 0}px`);
+
+  // 分页变化滚动到顶部
+  useEffect(() => {
+    getDOm()!.scroll({ top: 0, behavior: 'smooth' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pagination.current]);
+
   return (
-    <div className="p-12px upload-preview  flex flex-col">
+    <div className="p-12px upload-preview flex flex-col">
       <Spin
         spinning={loading}
+        tip="加载中..."
         wrapperClassName={classnames([
           `flex-1 overflow-x-hidden overflow-y-auto`,
           { hidden: !list?.length },
@@ -171,8 +186,15 @@ export const UploadPreview = () => {
           image={Empty.PRESENTED_IMAGE_SIMPLE}
         />
       )}
-      {!!list?.length && (
-        <div className="flex justify-center p-y-24px">
+      {
+        <div
+          className={classnames([
+            'flex justify-center p-y-24px',
+            {
+              hidden: !list?.length,
+            },
+          ])}
+        >
           <Pagination
             showTotal={(total) =>
               `第 ${pagination.current} 页，共 ${total} 条数据`
@@ -182,7 +204,7 @@ export const UploadPreview = () => {
             {...pagination}
           ></Pagination>
         </div>
-      )}
+      }
     </div>
   );
 };
