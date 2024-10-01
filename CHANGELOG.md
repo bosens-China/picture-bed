@@ -39,6 +39,7 @@ All notable changes to this project will be documented in this file.
 - Add Generate changelog
 - 添加自动构建任务
 - 修复未指定pnpm版本带来错误
+- Ci每次提交多一次消息处理
 
 ### Build
 
