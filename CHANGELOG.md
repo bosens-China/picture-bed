@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - 添加环境区分接口前缀
 - 添加夜间模式适配，对设置菜单记忆
 - 滚动条样式优化
+- 调整为hash路由，对映射路径更改
 
 ### 🎨 Styling
 
