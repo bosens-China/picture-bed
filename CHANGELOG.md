@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 ### ⚙️ Miscellaneous Tasks
 
 - Add Generate changelog
+- 添加自动构建任务
 
 ### Build
 
