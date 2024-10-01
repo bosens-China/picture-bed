@@ -14,8 +14,16 @@ const config: typeof Config = require(
 const { browserConfiguration, nodeConfiguration } = config;
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
+  let base = '/picture-bed/';
+  if (command === 'serve') {
+    base = '/';
+  } else if (mode === 'electron') {
+    base = '/';
+  }
+
   return {
+    base,
     plugins: [react(), UnoCSS()],
     resolve: {
       alias: {
@@ -41,6 +49,7 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+
     build: {
       rollupOptions: {
         output: {

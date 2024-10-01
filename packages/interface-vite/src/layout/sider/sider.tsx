@@ -78,8 +78,12 @@ export const Sider = () => {
                     items: operateItems,
                     onClick: _.partial(operateClick, f.key),
                   }}
+                  trigger={['click', 'hover']}
                 >
-                  <a onClick={(e) => e.preventDefault()}>
+                  <a
+                    onClick={(e) => e.preventDefault()}
+                    className="block pos-relative w-40px text-right"
+                  >
                     <DashOutlined></DashOutlined>
                   </a>
                 </Dropdown>
