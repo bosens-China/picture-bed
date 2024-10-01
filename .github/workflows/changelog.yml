@@ -31,7 +31,7 @@ jobs:
           git checkout master
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          set +e
           git add CHANGELOG.md
-          git commit -m "Update changelog"
+          git commit -m "Update changelog" || exit 0
+          git pull --rebase origin master  # 拉取远程更新并rebase
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git master
