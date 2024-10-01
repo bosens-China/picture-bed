@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import _ from 'lodash-es';
+import * as _ from 'lodash-es';
 
 export type MenuItem = {
   key: 'main' | string;

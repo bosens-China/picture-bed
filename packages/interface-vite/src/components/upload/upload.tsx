@@ -20,12 +20,12 @@ import {
 import { useDocumentVisibility, useRequest, useUpdateEffect } from 'ahooks';
 import { useEffect, useMemo, useState } from 'react';
 import { uploadFiles, UploadFilesBody } from 'core';
-import { UploadBody } from 'core/api/upload.ts';
 import { useAppSelector } from '@/store/hooks';
 import { activationItem } from '@/store/features/users/selectors';
 import { getErrorMsg } from '@/utils/error';
 import './style.less';
 import { checkClipboard } from './utils';
+import { browserUpload, UploadBodyBrowser } from 'core/api/upload-browser.ts';
 
 const { Dragger } = MyUpload;
 
@@ -47,20 +47,18 @@ export const Upload = () => {
 
   const [form] = Form.useForm<FieldType>();
   const { loading, run } = useRequest(
-    (obj: UploadFilesBody) => {
-      return uploadFiles({
-        ...obj,
-        axiosConfig: {
+    async (files: UploadFilesBody<UploadBodyBrowser>['files']) => {
+      return uploadFiles(browserUpload, {
+        files: files,
+
+        config: {
           onUploadProgress(progressEvent, body) {
             setSchedule((obj) => {
               const file = body.file as unknown as UploadFile;
               obj[file.uid] = progressEvent.progress || 0;
-
               return { ...obj };
             });
           },
-        },
-        config: {
           messageCallback: ({ item, err, data }) => {
             form.setFieldValue(
               'property',
@@ -153,17 +151,15 @@ export const Upload = () => {
 
   const handleOk = async () => {
     const result = await form.validateFields();
-    const files = result.property!.map((item): UploadBody => {
+    const files = result.property!.map((item): UploadBodyBrowser => {
       return {
         uid: activation?.uid || '',
-        file: item.originFileObj,
+        file: item.originFileObj as File,
       };
     });
     setSchedule({});
 
-    run({
-      files,
-    });
+    run(files);
   };
 
   const documentVisibility = useDocumentVisibility();

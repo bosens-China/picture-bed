@@ -10,7 +10,7 @@ import {
   FormOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import _ from 'lodash-es';
+import * as _ from 'lodash-es';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
