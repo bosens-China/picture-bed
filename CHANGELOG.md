@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - 滚动条样式优化
 - 调整为hash路由，对映射路径更改
 - 添加上传资源后刷新文件操作
+- 修复图片过高显示问题，对创建用户uid默认隐藏，对点击分页回滚到顶部
 
 ### 🎨 Styling
 
