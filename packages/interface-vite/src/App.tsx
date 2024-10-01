@@ -1,5 +1,5 @@
 import { ConfigProvider, theme as AppTheme } from 'antd';
-import { FC, PropsWithChildren, useMemo } from 'react';
+import { FC, PropsWithChildren, useEffect, useMemo } from 'react';
 import zhCN from 'antd/locale/zh_CN';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -12,6 +12,15 @@ export const App: FC<PropsWithChildren> = ({ children }) => {
       default:
         return AppTheme.defaultAlgorithm;
     }
+  }, [theme]);
+
+  useEffect(() => {
+    const isMac = /macintosh|mac os x/i.test(navigator.userAgent);
+    if (isMac) {
+      return;
+    }
+    document.body.classList.remove('light', 'dark');
+    document.body.classList.add(theme);
   }, [theme]);
 
   return (
