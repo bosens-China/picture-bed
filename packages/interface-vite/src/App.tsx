@@ -1,7 +1,16 @@
 import { ConfigProvider, theme as AppTheme } from 'antd';
-import { FC, PropsWithChildren, useEffect, useMemo } from 'react';
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+} from 'react';
 import zhCN from 'antd/locale/zh_CN';
 import { useTheme } from '@/hooks/useTheme';
+import { EventEmitter, useEvent } from '@/hooks/use-event/use-event';
+
+export const EventConent = createContext<null | EventEmitter<void>>(null);
 
 export const App: FC<PropsWithChildren> = ({ children }) => {
   const theme = useTheme();
@@ -23,6 +32,8 @@ export const App: FC<PropsWithChildren> = ({ children }) => {
     document.body.classList.add(theme);
   }, [theme]);
 
+  const event = useEvent();
+
   return (
     <ConfigProvider
       locale={zhCN}
@@ -40,7 +51,7 @@ export const App: FC<PropsWithChildren> = ({ children }) => {
         },
       }}
     >
-      {children}
+      <EventConent.Provider value={event}>{children}</EventConent.Provider>
     </ConfigProvider>
   );
 };

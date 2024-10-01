@@ -17,7 +17,7 @@ import {
 import { imgHistory } from 'core/api/page.js';
 import { useAppSelector } from '@/store/hooks';
 import { activationItem } from '@/store/features/users/selectors';
-import { useMemo } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Preview } from '@/components/preview/preview';
 import dayjs from 'dayjs';
 import './style.less';
@@ -25,12 +25,17 @@ import { getErrorMsg } from '@/utils/error';
 import { getVideoUrl } from './utils';
 import { CopyOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
+import { EventConent } from '@/App';
+import { EventName } from '@/hooks/use-event/event-name';
 
 const { Text } = Typography;
 const { Meta } = Card;
 
 export const UploadPreview = () => {
   const { message } = App.useApp();
+  const event = useContext(EventConent);
+  // 变化次数，主要用于刷新页面
+  const [numberChanges, setNumberChanges] = useState(0);
   const activation = useAppSelector(activationItem);
   const { loading, data, pagination } = usePagination(
     ({ pageSize, current }) => {
@@ -41,9 +46,13 @@ export const UploadPreview = () => {
         message.error(getErrorMsg(e));
       },
       ready: !!activation?.uid,
-      refreshDeps: [activation?.uid],
+      refreshDeps: [activation?.uid, numberChanges],
     },
   );
+
+  event?.useSubscription(EventName.uploadChanges, () => {
+    setNumberChanges(numberChanges + 1);
+  });
 
   const list = useMemo(() => {
     return data?.list.map((f) => {

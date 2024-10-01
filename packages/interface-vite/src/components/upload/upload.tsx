@@ -18,7 +18,7 @@ import {
   InboxOutlined,
 } from '@ant-design/icons';
 import { useDocumentVisibility, useRequest, useUpdateEffect } from 'ahooks';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { uploadFiles, UploadFilesBody } from 'core';
 import { useAppSelector } from '@/store/hooks';
 import { activationItem } from '@/store/features/users/selectors';
@@ -26,6 +26,8 @@ import { getErrorMsg } from '@/utils/error';
 import './style.less';
 import { checkClipboard } from './utils';
 import { browserUpload, UploadBodyBrowser } from 'core/api/upload-browser.ts';
+import { EventConent } from '@/App';
+import { EventName } from '@/hooks/use-event/event-name';
 
 const { Dragger } = MyUpload;
 
@@ -44,7 +46,7 @@ export const Upload = () => {
   });
   // const { user } = store;
   const { message, modal } = App.useApp();
-
+  const event = useContext(EventConent);
   const [form] = Form.useForm<FieldType>();
   const { loading, run } = useRequest(
     async (files: UploadFilesBody<UploadBodyBrowser>['files']) => {
@@ -96,11 +98,20 @@ export const Upload = () => {
       },
       onSuccess(data) {
         message.destroy();
-        if (data.every((f) => f.status === 'fulfilled')) {
-          message.success(`上传成功。`);
+
+        if (data.every((f) => f.status === 'rejected')) {
+          message.error(
+            '上传文件全部失败，鼠标悬浮文件信息可以查看具体错误信息。',
+          );
           return;
         }
-        message.warning(`未全部上传成功，请点击文件查看具体警告信息。`);
+        if (data.some((f) => f.status === 'rejected')) {
+          message.warning(
+            `未全部上传成功，鼠标悬浮文件信息可以查看具体错误信息。`,
+          );
+        }
+        message.success('上传成功');
+        event?.emit(EventName.uploadChanges);
       },
     },
   );
