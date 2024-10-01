@@ -8,6 +8,16 @@ export type MenuItem = {
   uid: string;
 };
 
+export interface BaseFieldType {
+  cuttingBoard: boolean;
+  concurrentQuantity: number;
+  waitingInterval: [number?, number?];
+}
+
+export interface ThemeFieldType {
+  theme: 'light' | 'dark' | 'auto';
+}
+
 export interface State {
   /**
    * 用户的列表
@@ -23,6 +33,8 @@ export interface State {
    * @memberof State
    */
   selected?: MenuItem['key'];
+  theme?: ThemeFieldType;
+  base?: BaseFieldType;
 }
 
 const initialState: State = {
@@ -45,7 +57,12 @@ export const staging = createSlice({
     setSelected: (state, action: PayloadAction<State['selected']>) => {
       state.selected = action.payload;
     },
-
+    setTheme: (state, action: PayloadAction<State['theme']>) => {
+      state.theme = action.payload;
+    },
+    setBase: (state, action: PayloadAction<BaseFieldType>) => {
+      state.base = action.payload;
+    },
     // increment: (state) => {
     //   // Redux Toolkit allows us to write "mutating" logic in reducers. It
     //   // doesn't actually mutate the state because it uses the Immer library,
@@ -63,6 +80,13 @@ export const staging = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addUser, removeUser, clearUser, setSelected } = staging.actions;
+export const {
+  addUser,
+  removeUser,
+  clearUser,
+  setSelected,
+  setTheme,
+  setBase,
+} = staging.actions;
 
 export default staging.reducer;

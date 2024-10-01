@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import zhCN from 'antd/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
-import { ConfigProvider } from 'antd';
 import '@/assets/styles/converge.less';
 import 'virtual:uno.css';
 import { App as AppProvider } from 'antd';
@@ -11,6 +9,7 @@ import { store } from '@/store/store';
 import { Provider } from 'react-redux';
 import { setAxiosConfiguration } from 'core';
 import config from 'core/config.json';
+import { App } from './App';
 
 // 如果浏览器环境下
 if (!IS_ELECTRON) {
@@ -30,28 +29,13 @@ if (rootEl) {
   const root = ReactDOM.createRoot(rootEl);
   root.render(
     <React.StrictMode>
-      <ConfigProvider
-        locale={zhCN}
-        theme={{
-          components: {
-            Layout: {
-              headerBg: '#fff',
-              headerPadding: 0,
-              footerPadding: 0,
-              siderBg: '#fff',
-            },
-            Card: {
-              paddingLG: 12,
-            },
-          },
-        }}
-      >
-        <Provider store={store}>
+      <Provider store={store}>
+        <App>
           <AppProvider>
             <Router></Router>
           </AppProvider>
-        </Provider>
-      </ConfigProvider>
+        </App>
+      </Provider>
     </React.StrictMode>,
   );
 }

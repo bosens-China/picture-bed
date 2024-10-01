@@ -1,17 +1,15 @@
-import { Form, Radio, Space } from 'antd';
-import { FC } from 'react';
-
-interface FieldType {
-  theme: 'auto' | 'light' | 'dark';
-}
+import { Form, FormInstance, Radio, Space } from 'antd';
+import { FC, useEffect } from 'react';
+import { ThemeFieldType } from '@/store/features/users/slice';
+import { useAppSelector } from '@/store/hooks';
 
 interface Props {
-  onOk: (values: FieldType) => void;
+  form: FormInstance<ThemeFieldType>;
 }
 
-export const Theme: FC<Props> = ({ onOk }) => {
+export const Theme: FC<Props> = ({ form }) => {
   const themes: Array<{
-    value: FieldType['theme'];
+    value: ThemeFieldType['theme'];
     label: React.ReactNode;
   }> = [
     {
@@ -43,9 +41,21 @@ export const Theme: FC<Props> = ({ onOk }) => {
       value: 'dark',
     },
   ];
+
+  const { theme } = useAppSelector((state) => state.users);
+
+  useEffect(() => {
+    form.setFieldsValue(theme || {});
+  }, [form, theme]);
+
   return (
-    <Form initialValues={{ theme: 'auto' }} onFinish={onOk} layout="vertical">
-      <Form.Item<FieldType> label="主题选择" name="theme">
+    <Form
+      initialValues={{ theme: 'auto' }}
+      onFinish={() => {}}
+      layout="vertical"
+      form={form}
+    >
+      <Form.Item<ThemeFieldType> label="主题设置" name="theme">
         <Radio.Group>
           <Space direction="vertical">
             {themes.map((item) => (

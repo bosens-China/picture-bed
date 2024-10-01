@@ -1,10 +1,23 @@
 import { Space } from 'antd';
+import classnames from 'classnames';
 
 import { Upload } from '@/components/upload/upload';
+import { useMemo } from 'react';
+import { useTheme } from '@/hooks/useTheme';
 
 export const Header = () => {
+  const theme = useTheme();
+  const className = useMemo(() => {
+    // @unocss-include
+    return classnames([
+      `flex p-x-24px items-center h-64px`,
+      {
+        'bg-#fff': theme === 'light',
+      },
+    ]);
+  }, [theme]);
   return (
-    <div className="flex p-x-24px items-center bg-#fff h-64px">
+    <div className={className}>
       {/* <a href="/" className="flex-1">
         <Title
           style={{

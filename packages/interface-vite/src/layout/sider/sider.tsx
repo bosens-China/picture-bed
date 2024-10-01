@@ -11,6 +11,7 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import * as _ from 'lodash-es';
+import { useTheme } from '@/hooks/useTheme';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -50,20 +51,26 @@ export const Sider = () => {
     }
   };
 
+  const theme = useTheme();
+
   const items = useMemo<MenuItem[]>(() => {
     return [
       {
         key: 'add',
-        label: <Button icon={<PlusOutlined />}>添加用户</Button>,
+        label: (
+          <div className="flex flex-1 justify-center items-center">
+            <Button icon={<PlusOutlined />}>添加用户</Button>
+          </div>
+        ),
         style: {
-          background: '#fff',
+          background: theme === 'dark' ? undefined : '#fff',
         },
       },
       ...users.map((f) => {
         return {
           ...f,
           label: (
-            <div className="flex">
+            <div className="flex flex-1">
               <div className="flex-1 mr-6px">{f.label}</div>
               {f.key !== 'main' && (
                 <Dropdown
@@ -82,7 +89,7 @@ export const Sider = () => {
         };
       }),
     ];
-  }, [operateItems, users]);
+  }, [operateItems, theme, users]);
 
   const [open, setOpen] = useState(false);
 
