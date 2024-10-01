@@ -21,6 +21,8 @@ export interface RunParallelProps<T, U> {
   waitingTime?: number;
 }
 
+export type RunParallelReturn<U> = Promise<PromiseSettledResult<Awaited<U>>[]>;
+
 /**
  * 限速器，用于控制异步任务的最大数量
  *

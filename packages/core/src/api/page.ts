@@ -1,7 +1,7 @@
 // https://playground.z.wiki/
 
-import { AxiosRequestConfig } from 'axios';
 import { instance } from '../utils/request';
+import { defaultConfig } from '../main';
 
 export interface RequestParameters {
   uid: string;
@@ -37,14 +37,11 @@ export interface Daum {
  * @param {RequestParameters} body
  * @return {*}
  */
-export const imgHistory = async (
-  body: RequestParameters,
-  config?: AxiosRequestConfig<unknown>,
-) => {
+export const imgHistory = async (body: RequestParameters) => {
   const { uid, current = 1, pageSize = 10 } = body;
   const { data } = await instance<ResponseParameters>({
     url: `/img/history`,
-    ...config,
+    ...defaultConfig,
     method: 'get',
     params: {
       uid,

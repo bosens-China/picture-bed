@@ -1,12 +1,8 @@
 import axios from 'axios';
-import { baseURL, browserURL } from '../config.json';
-import { isBrowser } from './platform';
+import { nodeConfiguration } from '../config.json';
 
 export const instance = axios.create({
-  baseURL: isBrowser() ? browserURL : baseURL,
-  // headers: {
-  //   origin: baseURL,
-  // },
+  ...nodeConfiguration,
 });
 
 instance.interceptors.response.use(

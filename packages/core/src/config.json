@@ -1,4 +1,11 @@
 {
-  "baseURL": "https://playground.z.wiki",
-  "browserURL": "/api_core"
+  "browserConfiguration": {
+    "baseURL": "/api_core"
+  },
+  "nodeConfiguration": {
+    "baseURL": "https://playground.z.wiki",
+    "headers": {
+      "origin": "https://playground.z.wiki"
+    }
+  }
 }

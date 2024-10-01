@@ -1,8 +1,7 @@
 // import { AxiosError } from 'axios';
-
-import { instance } from '../utils/request';
 import { fileFromPath } from 'formdata-node/file-from-path';
-import { axiosConfig } from '../main';
+import { realUpload } from './upload-browser';
+import { UploadFilesBody } from '../main';
 
 /**
  * 上传接口所需参数
@@ -19,21 +18,14 @@ export interface UploadBody {
    * @memberof UploadBody
    */
   fileName?: string;
-  /**
-   * 上传的文件，node环境下可以使用filePath
-   * 但是它和filePath必须存在一个
-   *
-   * @type {File}
-   * @memberof UploadBody
-   */
-  file?: File;
+
   /**
    * node环境下使用，上传的file文件地址
    *
    * @type {string}
    * @memberof UploadBody
    */
-  filePath?: string;
+  filePath: string;
   /**
    * 用户身份标识，用于区分身份所使用
    *
@@ -57,41 +49,21 @@ export interface UploadReturnStructure {
   md5: string;
 }
 
-export async function upload(body: UploadBody, config?: axiosConfig) {
-  if ([body.file, body.filePath].every((f) => !f)) {
-    throw new Error('file or filePath is required');
-  }
-
-  const file = body.file ?? (await fileFromPath(body.filePath!));
+/**
+ * node 上传文件方法
+ * @param body
+ * @param config
+ * @returns
+ */
+export async function upload(
+  body: UploadBody,
+  config?: UploadFilesBody<UploadBody>['config'],
+) {
+  const file = (await fileFromPath(body.filePath!)) as unknown as File;
   const fileName = body.fileName ?? file.name;
 
   const { uid } = body;
 
-  const form = new FormData();
-  form.append('fileName', fileName);
-  form.append('file', file);
-  form.append('uid', uid);
-  const { onUploadProgress, ...rest } = config || {};
-  const { data } = await instance<UploadReturnStructure>({
-    url: `/img/upload`,
-    ...rest,
-    method: 'post',
-    data: form,
-    onUploadProgress(progressEvent) {
-      onUploadProgress?.(progressEvent, body);
-    },
-  });
-  return data;
-  // } catch (e) {
-  //   if (e instanceof AxiosError) {
-  //     throw {
-  //       message: e.message,
-  //       data: e.response?.data,
-  //       status: e.response?.status,
-  //       statusText: e.response?.statusText,
-  //       config: e.config,
-  //     };
-  //   }
-  //   throw e;
-  // }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return realUpload({ file, fileName, uid }, config as any);
 }
