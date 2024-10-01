@@ -20,4 +20,4 @@
 - 对客户端的操作区域适配
 - [x] 滚动条样式优化
 - 上传关闭弹窗刷新界面
-- Github Action 编写
+- [x] Github Action 编写
