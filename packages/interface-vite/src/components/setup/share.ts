@@ -3,7 +3,7 @@ import { defaultConfig } from 'core';
 
 export const baseInitialValues = {
   cuttingBoard: true,
-  cuttingBoardFormat: ['html'],
+  cuttingBoardFormat: ['image'],
   concurrentQuantity: defaultConfig.maxConcurrency,
   waitingInterval: defaultConfig.waitingTime,
   shortcutPaste: true,

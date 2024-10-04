@@ -1,6 +1,7 @@
 import { Avatar } from 'antd';
 import { ResponseParameters } from 'core/api/page.js';
 import { FC, useMemo } from 'react';
+import { TypeIcons } from './types-icon';
 
 type Props = ResponseParameters['data'][number];
 
@@ -40,9 +41,11 @@ export const Preview: FC<Props> = ({ url, contentType }) => {
 
     return (
       <div className="h-140px flex! justify-center items-center p-t-15px">
-        <Avatar shape="square" size={140}>
-          {fileType ? `${fileType}` : `.${type}`}
-        </Avatar>
+        <TypeIcons fileName={url}>
+          <Avatar shape="square" size={140}>
+            {fileType ? `${fileType}` : `.${type}`}
+          </Avatar>
+        </TypeIcons>
       </div>
     );
   }, [contentType, url]);

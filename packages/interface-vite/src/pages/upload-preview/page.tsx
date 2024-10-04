@@ -84,6 +84,7 @@ export const UploadPreview = () => {
         tip="加载中..."
         wrapperClassName={classnames([
           `flex-1 overflow-x-hidden overflow-y-auto`,
+          { hidden: !loading && !list?.length },
         ])}
       >
         <Row gutter={[8, 16]} className="my-12px">
@@ -190,7 +191,7 @@ export const UploadPreview = () => {
           className={classnames([
             'flex justify-center p-y-24px',
             {
-              hidden: !list?.length,
+              'hidden!': !list?.length,
             },
           ])}
         >
