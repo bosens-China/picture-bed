@@ -30,6 +30,10 @@ All notable changes to this project will be documented in this file.
 - 添加上传资源后刷新文件操作
 - 修复图片过高显示问题，对创建用户uid默认隐藏，对点击分页回滚到顶部
 
+### 🐛 Bug Fixes
+
+- 修复其他平台注入滚动条样式问题
+
 ### 🎨 Styling
 
 - 修改左侧布局宽度和上传弹窗文字
