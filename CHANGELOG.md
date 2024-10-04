@@ -39,6 +39,7 @@ All notable changes to this project will be documented in this file.
 ### 🎨 Styling
 
 - 修改左侧布局宽度和上传弹窗文字
+- Spin和分页位置调整，对预览文件添加zip和word常见格式图片
 
 ### ⚙️ Miscellaneous Tasks
 
