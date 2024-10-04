@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - 添加上传资源后刷新文件操作
 - 修复图片过高显示问题，对创建用户uid默认隐藏，对点击分页回滚到顶部
 - 设置剪切板和并发设置功能补全，对剪切板功能增强
+- 添加删除用户功能
 
 ### 🐛 Bug Fixes
 
