@@ -28,6 +28,7 @@ import { checkClipboard } from './utils';
 import { browserUpload, UploadBodyBrowser } from 'core/api/upload-browser.ts';
 import { EventConent } from '@/App';
 import { EventName } from '@/hooks/use-event/event-name';
+import { useCache } from './useCache';
 
 const { Dragger } = MyUpload;
 
@@ -48,6 +49,9 @@ export const Upload = () => {
   const { message, modal } = App.useApp();
   const event = useContext(EventConent);
   const [form] = Form.useForm<FieldType>();
+
+  const cacheMap = useCache({ open: modalState.open });
+
   const { loading, run } = useRequest(
     async (files: UploadFilesBody<UploadBodyBrowser>['files']) => {
       return uploadFiles(browserUpload, {
@@ -84,11 +88,15 @@ export const Upload = () => {
       manual: true,
       /*
        * 将上传的资源全部重置为loading
+       * 排除掉已经成功的元素
        */
       onBefore() {
         form.setFieldValue(
           'property',
           property?.map((f) => {
+            if (f.originFileObj?.uid && cacheMap.get(f.originFileObj?.uid)) {
+              return f;
+            }
             return {
               ...f,
               status: 'uploading',
@@ -98,20 +106,27 @@ export const Upload = () => {
       },
       onSuccess(data) {
         message.destroy();
+        const multifile = data.length > 1;
 
         if (data.every((f) => f.status === 'rejected')) {
           message.error(
-            '上传文件全部失败，鼠标悬浮文件信息可以查看具体错误信息。',
+            `上传文件${multifile ? '全部' : ''}失败，鼠标悬浮文件信息可以查看具体错误信息。`,
           );
           return;
         }
         if (data.some((f) => f.status === 'rejected')) {
           message.warning(
-            `未全部上传成功，鼠标悬浮文件信息可以查看具体错误信息。`,
+            `未${multifile ? '全部' : ''}上传成功，鼠标悬浮文件信息可以查看具体错误信息。`,
           );
         }
         message.success('上传成功');
         event?.emit(EventName.uploadChanges);
+        /*
+         * 上传成功，给表单一个标识标记上传成功
+         */
+        property?.forEach((item) => {
+          cacheMap.set(item.originFileObj?.uid || '', true);
+        });
       },
     },
   );
@@ -162,12 +177,21 @@ export const Upload = () => {
 
   const handleOk = async () => {
     const result = await form.validateFields();
-    const files = result.property!.map((item): UploadBodyBrowser => {
-      return {
-        uid: activation?.uid || '',
-        file: item.originFileObj as File,
-      };
-    });
+    const files = result
+      .property!.filter(
+        (f) => f.originFileObj?.uid && !cacheMap.get(f.originFileObj?.uid),
+      )
+      .map((item): UploadBodyBrowser => {
+        return {
+          uid: activation?.uid || '',
+          file: item.originFileObj as File,
+        };
+      });
+
+    if (!files.length) {
+      message.warning(`资源已全部上传完成，无新增资源待上传。`);
+      return;
+    }
     setSchedule({});
 
     run(files);
