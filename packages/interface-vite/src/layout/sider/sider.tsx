@@ -1,8 +1,8 @@
 import type { MenuProps } from 'antd';
-import { Button, Dropdown, Menu } from 'antd';
+import { App, Button, Dropdown, Menu } from 'antd';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
-import { useMemo, useState } from 'react';
-import { setSelected } from '@/store/features/users/slice';
+import { useCallback, useMemo, useState } from 'react';
+import { removeUser, setSelected } from '@/store/features/users/slice';
 import { SiderModal } from './siderModal';
 import {
   DashOutlined,
@@ -22,6 +22,7 @@ export interface Edit {
 export const Sider = () => {
   const { users, selected } = useAppSelector((state) => state.users);
   const dispatch = useAppDispatch();
+  const { modal, message } = App.useApp();
 
   const [edit, setEdit] = useState<Edit>({});
 
@@ -42,14 +43,31 @@ export const Sider = () => {
     [],
   );
 
-  const operateClick = (key: string, e: { key: string }) => {
-    switch (e.key) {
-      case 'edit':
-        setEdit({ key: key });
-        setOpen(true);
-        return;
-    }
-  };
+  const operateClick = useCallback(
+    async (
+      key: string,
+      e: Parameters<NonNullable<MenuProps['onClick']>>[0],
+    ) => {
+      e.domEvent.stopPropagation();
+
+      switch (e.key) {
+        case 'edit':
+          setEdit({ key: key });
+          setOpen(true);
+          return;
+        case 'delete':
+          await modal.confirm({
+            title: `删除提醒`,
+            content: '确定要删除该用户吗？',
+            onOk() {
+              dispatch(removeUser(key));
+              message.success('删除成功');
+            },
+          });
+      }
+    },
+    [dispatch, message, modal],
+  );
 
   const theme = useTheme();
 
@@ -76,6 +94,7 @@ export const Sider = () => {
                 <Dropdown
                   menu={{
                     items: operateItems,
+
                     onClick: _.partial(operateClick, f.key),
                   }}
                   trigger={['click', 'hover']}
@@ -93,7 +112,7 @@ export const Sider = () => {
         };
       }),
     ];
-  }, [operateItems, theme, users]);
+  }, [operateClick, operateItems, theme, users]);
 
   const [open, setOpen] = useState(false);
 

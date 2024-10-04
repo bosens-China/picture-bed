@@ -1,5 +1,5 @@
 import { App, Form, Input, Modal, Space, Tag, Tooltip } from 'antd';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 
 import {
@@ -58,6 +58,13 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
 
   const [expand, setExpand] = useState(false);
 
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    form.setFieldsValue(initialValues as any);
+  }, [form, initialValues, open]);
   return (
     <>
       <Modal

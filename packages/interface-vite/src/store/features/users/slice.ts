@@ -80,8 +80,16 @@ export const staging = createSlice({
     addUser: (state, action: PayloadAction<MenuItem>) => {
       state.users = _.uniqBy([...state.users, action.payload], 'key');
     },
+    /**
+     * 删除用户，如果当前删除的为激活用户则会直接跳转到主用户
+     * @param state
+     * @param action
+     */
     removeUser: (state, action: PayloadAction<string>) => {
       state.users = state.users.filter((item) => item.key !== action.payload);
+      if (state.selected === action.payload) {
+        state.selected = state.users[0]?.key;
+      }
     },
     clearUser: (state) => {
       state.users = [];

@@ -42,7 +42,9 @@ export const checkClipboard = async ({
     }
     return files;
   } catch (e) {
-    console.error(e);
+    if (import.meta.env.DEV) {
+      console.warn(e);
+    }
     return [];
   }
 };
