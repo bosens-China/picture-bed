@@ -30,6 +30,7 @@ export const App: FC<PropsWithChildren> = ({ children }) => {
     }
     document.body.classList.remove('light', 'dark');
     document.body.classList.add(theme);
+    import('@/assets/styles/scrollbar.less');
   }, [theme]);
 
   const event = useEvent();
