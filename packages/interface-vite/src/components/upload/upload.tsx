@@ -12,43 +12,50 @@ import {
 } from 'antd';
 
 import {
-  ExclamationCircleFilled,
   FolderAddOutlined,
   FolderOpenOutlined,
   InboxOutlined,
 } from '@ant-design/icons';
-import { useDocumentVisibility, useRequest, useUpdateEffect } from 'ahooks';
+import { useRequest } from 'ahooks';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { uploadFiles, UploadFilesBody } from 'core';
 import { useAppSelector } from '@/store/hooks';
 import { activationItem } from '@/store/features/users/selectors';
 import { getErrorMsg } from '@/utils/error';
 import './style.less';
-import { checkClipboard } from './utils';
 import { browserUpload, UploadBodyBrowser } from 'core/api/upload-browser.ts';
 import { EventConent } from '@/App';
 import { EventName } from '@/hooks/use-event/event-name';
 import { useCache } from './useCache';
+import { useReadCuttingBoard } from './use-read-cutting-board';
 
 const { Dragger } = MyUpload;
 
-type FieldType = {
+export type FieldType = {
   property?: UploadFile[];
 };
 
+export interface UploadState {
+  open: boolean;
+  isDir?: boolean;
+}
+
 export const Upload = () => {
   // Modal 相关状态
-  const [modalState, setModalState] = useState<{
-    open: boolean;
-    isDir?: boolean;
-  }>({
+  const [modalState, setModalState] = useState<UploadState>({
     open: false,
     isDir: false,
   });
   // const { user } = store;
-  const { message, modal } = App.useApp();
+  const { message } = App.useApp();
   const event = useContext(EventConent);
   const [form] = Form.useForm<FieldType>();
+
+  const { property, requiredBase } = useReadCuttingBoard({
+    modalState,
+    setModalState,
+    form,
+  });
 
   const cacheMap = useCache({ open: modalState.open });
 
@@ -56,8 +63,9 @@ export const Upload = () => {
     async (files: UploadFilesBody<UploadBodyBrowser>['files']) => {
       return uploadFiles(browserUpload, {
         files: files,
-
         config: {
+          maxConcurrency: requiredBase.concurrentQuantity,
+          waitingTime: requiredBase.waitingInterval,
           onUploadProgress(progressEvent, body) {
             setSchedule((obj) => {
               const file = body.file as unknown as UploadFile;
@@ -125,13 +133,13 @@ export const Upload = () => {
          * 上传成功，给表单一个标识标记上传成功
          */
         property?.forEach((item) => {
-          cacheMap.set(item.originFileObj?.uid || '', true);
+          if (item.status === 'done') {
+            cacheMap.set(item.originFileObj?.uid || '', true);
+          }
         });
       },
     },
   );
-
-  const property = Form.useWatch('property', form);
 
   const [schedule, setSchedule] = useState<Record<string, number>>({});
 
@@ -178,9 +186,12 @@ export const Upload = () => {
   const handleOk = async () => {
     const result = await form.validateFields();
     const files = result
-      .property!.filter(
-        (f) => f.originFileObj?.uid && !cacheMap.get(f.originFileObj?.uid),
-      )
+      .property!.filter((f) => {
+        if (!cacheMap.size) {
+          return true;
+        }
+        return f.originFileObj?.uid && !cacheMap.get(f.originFileObj?.uid);
+      })
       .map((item): UploadBodyBrowser => {
         return {
           uid: activation?.uid || '',
@@ -197,44 +208,6 @@ export const Upload = () => {
     run(files);
   };
 
-  const documentVisibility = useDocumentVisibility();
-
-  /*
-   * 页面变动监听剪切板的变化，读取所有图片资源来上传
-   */
-  useUpdateEffect(() => {
-    if (documentVisibility !== 'visible') {
-      return;
-    }
-    (async () => {
-      const files = await checkClipboard();
-
-      if (!files.length) {
-        return;
-      }
-      modal.confirm({
-        title: '上传提醒?',
-        icon: <ExclamationCircleFilled />,
-        content: !modalState.open
-          ? '检测到剪切板包含图片资源，是否打开上传资源对话框，上传相关资源？'
-          : `检测到剪切板包含图片资源，是否将相关资源上传到待上传资源列表？`,
-        onOk() {
-          if (!modalState.open) {
-            setModalState({ open: true });
-          }
-          // 赋值
-          form.setFieldValue(
-            'property',
-            files.map((f) => new File([f.blob], f.fileName)),
-          );
-        },
-        onCancel() {
-          //
-        },
-      });
-    })();
-  }, [documentVisibility]);
-
   const uploadProps: UploadProps = {
     multiple: true,
 
@@ -245,7 +218,7 @@ export const Upload = () => {
 
   type UploadItems = {
     name: keyof FieldType;
-    describe: [string] | [string, string];
+    describe: Array<string>;
     label: string;
   } & Partial<UploadProps>;
 
@@ -254,17 +227,29 @@ export const Upload = () => {
       !modalState.isDir
         ? {
             name: 'property',
-            describe: [`单击或拖动文件到此区域进行上传`, `支持单次或批量上传`],
+            describe: [
+              `单击或拖动文件到此区域进行上传`,
+              `支持单次或批量上传`,
+              requiredBase.shortcutPaste
+                ? '如果剪切板有内容可以使用快捷键Ctrl+V（meta+V）进行粘贴'
+                : '',
+            ].filter((f) => f),
             label: '待上传资源',
           }
         : {
             name: 'property',
-            describe: [`单击或拖动文件夹到此区域进行上传`],
+            describe: [
+              `单击或拖动文件夹到此区域进行上传`,
+              requiredBase.shortcutPaste ? '' : '',
+              requiredBase.shortcutPaste
+                ? '如果剪切板有内容可以使用快捷键Ctrl+V（meta+V）进行粘贴'
+                : '',
+            ].filter((f) => f),
             label: '待上传资源（文件夹）',
             directory: true,
           },
     ];
-  }, [modalState.isDir]);
+  }, [modalState.isDir, requiredBase.shortcutPaste]);
 
   const menu: DropdownProps['menu'] = {
     items: [
@@ -303,8 +288,9 @@ export const Upload = () => {
         width={800}
         centered
         closable={!loading}
-        keyboard={!loading}
-        maskClosable={!loading}
+        keyboard={false}
+        maskClosable={false}
+        className="max-w-100vw"
         footer={[
           <Button key="not" onClick={handleCancel} disabled={loading}>
             取消
@@ -347,9 +333,13 @@ export const Upload = () => {
                     <InboxOutlined />
                   </p>
                   <p className="ant-upload-text">{item.describe[0]}</p>
-                  {item.describe[1] && (
-                    <p className="ant-upload-hint">{item.describe[1]}</p>
-                  )}
+                  {item.describe.slice(1).map((f) => {
+                    return (
+                      <p className="ant-upload-hint" key={f}>
+                        {f}
+                      </p>
+                    );
+                  })}
                 </Dragger>
               </Form.Item>
             );

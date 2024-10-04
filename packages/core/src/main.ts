@@ -7,7 +7,6 @@ import type {
   UploadBodyBrowser,
 } from './api/upload-browser';
 import {
-  getRandomInt,
   runParallel,
   RunParallelProps,
   RunParallelReturn,
@@ -20,10 +19,12 @@ export type UploadProgress = (
   body: RealBody,
 ) => void;
 
+type Constraint = UploadBody | UploadBodyBrowser;
+
 /**
  * 消息回调
  */
-export type MessageCallback<T extends UploadBody | UploadBodyBrowser> = (e: {
+export type MessageCallback<T extends Constraint> = (e: {
   index: number;
   total: number;
   data?: UploadReturnStructure;
@@ -31,12 +32,26 @@ export type MessageCallback<T extends UploadBody | UploadBodyBrowser> = (e: {
   item: T;
 }) => void;
 
+export type Config<T extends UploadBody | UploadBodyBrowser> = Partial<
+  Omit<RunParallelProps<unknown, unknown>, 'iteratorFn'>
+> & {
+  messageCallback?: MessageCallback<T>;
+  onUploadProgress?: UploadProgress;
+};
+
 export type UploadFilesBody<T extends UploadBody | UploadBodyBrowser> = {
-  config?: Partial<Omit<RunParallelProps<unknown, unknown>, 'iteratorFn'>> & {
-    messageCallback?: MessageCallback<T>;
-    onUploadProgress?: UploadProgress;
-  };
+  config?: Config<T>;
   files: T[];
+};
+
+/**
+ * 配置项的默认填充值，后续暴露给平台的设置值使用，充当默认值
+ */
+export const defaultConfig: Required<Config<Constraint>> = {
+  maxConcurrency: 4,
+  waitingTime: [0, 1000],
+  messageCallback: () => {},
+  onUploadProgress: () => {},
 };
 
 /**
@@ -58,8 +73,8 @@ export async function uploadFiles(
   { files, config }: UploadFilesBody<any>,
 ): RunParallelReturn<UploadReturnStructure> {
   const {
-    maxConcurrency = 4,
-    waitingTime = getRandomInt(0, 1000),
+    maxConcurrency = defaultConfig.maxConcurrency,
+    waitingTime = defaultConfig.waitingTime,
     messageCallback,
   } = config || {};
   const result = await runParallel(files, {
@@ -80,7 +95,7 @@ export async function uploadFiles(
   return result;
 }
 
-export const defaultConfig: AxiosRequestConfig<unknown> = {};
+export const defaultAxiosConfig: AxiosRequestConfig<unknown> = {};
 
 /**
  * 全局修改axios配置，会影响到所有的api相关接口
@@ -88,7 +103,7 @@ export const defaultConfig: AxiosRequestConfig<unknown> = {};
  * @param fn
  */
 export const setAxiosConfiguration = (
-  fn: (config: typeof defaultConfig) => void,
+  fn: (config: typeof defaultAxiosConfig) => void,
 ) => {
-  fn(defaultConfig);
+  fn(defaultAxiosConfig);
 };

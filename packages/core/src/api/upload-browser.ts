@@ -1,5 +1,5 @@
 import { instance } from '../utils/request';
-import { type UploadFilesBody, defaultConfig } from '../main';
+import { type UploadFilesBody, defaultAxiosConfig } from '../main';
 import type { UploadBody, UploadReturnStructure } from './upload';
 
 /**
@@ -64,7 +64,7 @@ export const realUpload = async (
   const { onUploadProgress } = config || {};
   const { data } = await instance<UploadReturnStructure>({
     url: `/img/upload`,
-    ...defaultConfig,
+    ...defaultAxiosConfig,
     method: 'post',
     data: form,
     onUploadProgress(progressEvent) {

@@ -18,7 +18,7 @@ export interface RunParallelProps<T, U> {
    */
   iteratorFn: (item: T, index: number, total: number) => U;
   // 等待时间
-  waitingTime?: number;
+  waitingTime?: number | [number?, number?] | [number?];
 }
 
 export type RunParallelReturn<U> = Promise<PromiseSettledResult<Awaited<U>>[]>;
@@ -39,7 +39,8 @@ export async function runParallel<T, U>(
 ) {
   const total = source.length;
   let index = 0;
-  const { maxConcurrency, iteratorFn, waitingTime = 0 } = options;
+  const { iteratorFn, waitingTime = 0 } = options;
+  const maxConcurrency = Math.max(1, options.maxConcurrency);
   // 结果
   const ret: Promise<U>[] = [];
   // 控制任务等待
@@ -55,8 +56,24 @@ export async function runParallel<T, U>(
     // 如果数量大于并发，则限速
     if (total > maxConcurrency) {
       const e = p.then(async () => {
+        /*
+         * 对等待时间，需要同时支持范围和精确值
+         */
         if (waitingTime) {
-          await sleep(waitingTime);
+          if (Array.isArray(waitingTime)) {
+            if (waitingTime.length === 1) {
+              await sleep(Math.max(waitingTime[0] || 0, 0));
+            } else {
+              await sleep(
+                getRandomInt(
+                  Math.max(waitingTime[0] || 0, 0),
+                  Math.max(waitingTime[1] || 0),
+                ),
+              );
+            }
+          } else {
+            await sleep(Math.max(waitingTime, 0));
+          }
         }
         executing.splice(executing.indexOf(e), 1);
       });

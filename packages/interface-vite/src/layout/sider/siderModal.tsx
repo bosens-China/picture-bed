@@ -67,6 +67,7 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
         onCancel={handleCancel}
         width={600}
         centered
+        className="max-w-100vw"
       >
         <Form
           onFinish={handleOk}

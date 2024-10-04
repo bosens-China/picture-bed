@@ -1,16 +1,6 @@
 import { DatabaseOutlined } from '@ant-design/icons';
-import {
-  App,
-  Button,
-  Col,
-  Form,
-  Menu,
-  MenuProps,
-  Modal,
-  Row,
-  Space,
-} from 'antd';
-import { FC, useState } from 'react';
+import { App, Button, Form, Modal, Space, Tabs, TabsProps } from 'antd';
+import { FC } from 'react';
 import { Base } from './base';
 import { Theme } from './theme';
 import { useAppDispatch } from '@/store/hooks';
@@ -42,12 +32,10 @@ export const Setup: FC<Props> = ({ open, setOpen }) => {
     try {
       base = await baseForm.validateFields();
     } catch {
-      setSelectedKeys(['base']);
       return;
     }
     try {
       theme = await themeForm.validateFields();
-      setSelectedKeys(['theme']);
     } catch {
       return;
     }
@@ -56,23 +44,36 @@ export const Setup: FC<Props> = ({ open, setOpen }) => {
     message.success('设置保存成功');
   };
 
-  type MenuItem = Required<MenuProps>['items'][number] & {
-    key: 'base' | 'theme';
-  };
-
-  const items: MenuItem[] = [
+  const tabItems: TabsProps['items'] = [
     {
       label: '基础模块设置',
       key: 'base',
       icon: <DatabaseOutlined />,
+      children: (
+        <div className="h-400px max-h-80vh overflow-auto">
+          <Base form={baseForm} />
+        </div>
+      ),
+      forceRender: true,
     },
     {
-      label: '主题设置',
+      label: (
+        <div className="flex items-center">
+          <div className="i-mdi-theme-light-dark text-size-16px! mr-12px"></div>
+          主题设置
+        </div>
+      ),
       key: 'theme',
-      icon: <div className="i-mdi-theme-light-dark text-size-16px!"></div>,
+      // icon: ,
+      children: (
+        <div className="h-400px max-h-80vh overflow-auto">
+          <Theme form={themeForm} />
+        </div>
+      ),
+
+      forceRender: true,
     },
   ];
-  const [selectedKeys, setSelectedKeys] = useState<MenuItem['key'][]>(['base']);
 
   return (
     <Modal
@@ -82,39 +83,19 @@ export const Setup: FC<Props> = ({ open, setOpen }) => {
       onCancel={handleCancel}
       width={800}
       footer={null}
+      className="max-w-100vw"
+      centered
     >
-      <Row gutter={16}>
-        <Col flex="160px" className="">
-          <Menu
-            className="h-400px"
-            onSelect={(e) => {
-              setSelectedKeys(e.selectedKeys as MenuItem['key'][]);
-            }}
-            selectedKeys={selectedKeys}
-            mode="inline"
-            items={items}
-          />
-        </Col>
-        <Col flex={'auto'}>
-          <div className="flex flex-col h-400px">
-            <div className="flex-1 overflow-auto">
-              {selectedKeys.includes('base') && <Base form={baseForm}></Base>}
-              {selectedKeys.includes('theme') && (
-                <Theme form={themeForm}></Theme>
-              )}
-            </div>
-            <div className="flex">
-              <div className="flex-1"></div>
-              <Space>
-                <Button onClick={handleCancel}>取消</Button>
-                <Button type="primary" onClick={handleOk}>
-                  全部保存
-                </Button>
-              </Space>
-            </div>
-          </div>
-        </Col>
-      </Row>
+      <Tabs tabPosition="left" items={tabItems}></Tabs>
+      <div className="flex">
+        <div className="flex-1"></div>
+        <Space>
+          <Button onClick={handleCancel}>取消</Button>
+          <Button type="primary" onClick={handleOk}>
+            全部保存
+          </Button>
+        </Space>
+      </div>
     </Modal>
   );
 };

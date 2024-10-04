@@ -9,10 +9,42 @@ export type MenuItem = {
 };
 
 export interface BaseFieldType {
+  /**
+   * 剪切板
+   */
   cuttingBoard: boolean;
+  /**
+   * 最大并发量
+   */
   concurrentQuantity: number;
+  /**
+   * 等待时间
+   */
   waitingInterval: [number?, number?];
+  /**
+   * 剪切板支持格式
+   */
+  cuttingBoardFormat: (typeof cuttingBoardFormat)[number]['value'];
+  /**
+   * 是否支持快捷粘贴
+   */
+  shortcutPaste: boolean;
 }
+
+export const cuttingBoardFormat = [
+  {
+    label: 'html',
+    value: 'html',
+  },
+  {
+    label: 'txt',
+    value: 'txt',
+  },
+  {
+    label: 'image',
+    value: 'image',
+  },
+] as const;
 
 export interface ThemeFieldType {
   theme: 'light' | 'dark' | 'auto';
