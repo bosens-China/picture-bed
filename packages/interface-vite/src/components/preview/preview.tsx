@@ -1,4 +1,4 @@
-import { Avatar } from 'antd';
+import { Avatar, Image } from 'antd';
 import { ResponseParameters } from 'core/api/page.js';
 import { FC, useMemo } from 'react';
 import { TypeIcons } from './types-icon';
@@ -12,7 +12,7 @@ export const Preview: FC<Props> = ({ url, contentType }) => {
     if (contentType.includes('image')) {
       return (
         <div className="h-140px flex! justify-center items-center">
-          <img
+          <Image
             className="h-auto! object-fill w-auto! min-w-48px max-h-140px!"
             src={url}
             alt={url}
@@ -40,7 +40,12 @@ export const Preview: FC<Props> = ({ url, contentType }) => {
     }
 
     return (
-      <div className="h-140px flex! justify-center items-center p-t-15px">
+      <div
+        className="h-140px flex! justify-center items-center p-t-15px"
+        onClick={() => {
+          window.open(url, url);
+        }}
+      >
         <TypeIcons fileName={url}>
           <Avatar shape="square" size={140}>
             {fileType ? `${fileType}` : `.${type}`}

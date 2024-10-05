@@ -1,4 +1,4 @@
-import { usePagination, useScroll } from 'ahooks';
+import { usePagination, useRequest, useScroll } from 'ahooks';
 import {
   App,
   Card,
@@ -23,19 +23,23 @@ import dayjs from 'dayjs';
 import './style.less';
 import { getErrorMsg } from '@/utils/error';
 import { getVideoUrl } from './utils';
-import { CopyOutlined } from '@ant-design/icons';
+import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { EventConent } from '@/App';
 import { EventName } from '@/hooks/use-event/event-name';
 import { useCssVariables } from '@/hooks/use-css-variables';
+import { imgDelete } from 'core/api/delete.ts';
 
 const { Text } = Typography;
 const { Meta } = Card;
 
 export const UploadPreview = () => {
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
   const event = useContext(EventConent);
-  // 变化次数，主要用于刷新页面
+  /*
+   * 变化次数，主要用于刷新页面，每次这个值发生变化
+   * 就会把列表重置到第一页
+   */
   const [numberChanges, setNumberChanges] = useState(0);
   const activation = useAppSelector(activationItem);
   const { loading, data, pagination } = usePagination(
@@ -76,6 +80,17 @@ export const UploadPreview = () => {
     getDOm()!.scroll({ top: 0, behavior: 'smooth' });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.current]);
+
+  const { run: runDelete, loading: loadingDelete } = useRequest(imgDelete, {
+    manual: true,
+    onSuccess() {
+      message.success('删除成功');
+      setNumberChanges(numberChanges + 1);
+    },
+    onError(e) {
+      message.error(getErrorMsg(e));
+    },
+  });
 
   return (
     <div className="p-12px upload-preview flex flex-col">
@@ -140,6 +155,33 @@ export const UploadPreview = () => {
                 icon: (
                   <div className="i-vscode-icons-file-type-zip text-size-18px"></div>
                 ),
+              },
+              {
+                label: '删除',
+                key: '3',
+                icon: <DeleteOutlined />,
+                onClick: async () => {
+                  modal.confirm({
+                    title: '删除提醒',
+                    content: '确定要删除吗？',
+                    async onOk() {
+                      runDelete({
+                        uid: activation?.uid || '',
+                        id: `${item.id}`,
+                      });
+                    },
+                    closable: !loadingDelete,
+                    keyboard: !loadingDelete,
+                    maskClosable: !loadingDelete,
+                    onCancel() {
+                      if (loadingDelete) {
+                        return Promise.reject();
+                      }
+                    },
+                  });
+
+                  // 调用删除接口，之后刷新页面
+                },
               },
             ].filter((f) => ('show' in f ? f.show : true));
             return (
