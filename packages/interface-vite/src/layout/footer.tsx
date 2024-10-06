@@ -9,7 +9,7 @@ export const Footer = () => {
   const location = useLocation();
 
   const { data } = useRequest(getData, {
-    refreshDeps: [location],
+    refreshDeps: [location.pathname],
     debounceWait: 500,
     debounceLeading: true,
   });

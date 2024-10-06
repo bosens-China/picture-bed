@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
 
 export const useStyle = (css: Record<string, Record<string, string>>) => {
-  const styleRef = useRef(document.querySelector('#_srtyle'));
+  const styleRef = useRef<HTMLStyleElement | null>(null);
   useEffect(() => {
     if (!styleRef.current) {
       const style = document.createElement('style');
-      style.id = '_srtyle';
       document.head.appendChild(style);
-      styleRef.current = style;
+      styleRef.current = style as HTMLStyleElement;
     }
 
     return () => {

@@ -9,6 +9,8 @@ import {
 } from '@/store/features/users/slice';
 import { Edit } from './sider';
 import { CaretDownFilled, CaretUpFilled } from '@ant-design/icons';
+import { imgHistory } from 'core/api/page.js';
+import { useRequest } from 'ahooks';
 
 interface Props {
   open: boolean;
@@ -20,7 +22,7 @@ interface Props {
 export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
   const dispatch = useAppDispatch();
 
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
 
   const [form] = Form.useForm<FieldType>();
 
@@ -32,10 +34,46 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
     form.resetFields();
   };
 
+  const { runAsync: runHistory, loading: loadingHistory } = useRequest(
+    imgHistory,
+    { manual: true },
+  );
+
   const handleOk = async () => {
     const values = await form.validateFields();
     values.uid ||= values.label as string;
     values.key = values.uid;
+    /*
+     * 如果是新增用户，调用一次查询接口判断用户是否已经存在了
+     * 如果存在则进行弹窗提示，是否继续后续的步骤
+     * 如果编辑则不等于自身的时候进行判断
+     */
+
+    let repeat = false;
+
+    if (initialValues?.uid !== values.uid) {
+      try {
+        const data = await runHistory({ uid: values.uid });
+        repeat = !!data.list.length;
+      } catch {
+        //
+      }
+    }
+
+    if (repeat) {
+      const result = await modal.confirm({
+        title: `新建提示`,
+        content: (
+          <>
+            用户标识 <Tag>{values.uid}</Tag> 已经存在，是否继续添加用户？
+          </>
+        ),
+      });
+      if (!result) {
+        return;
+      }
+    }
+
     dispatch(
       addUser({
         ...values,
@@ -75,6 +113,7 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
         width={600}
         centered
         className="max-w-100vw"
+        confirmLoading={loadingHistory}
       >
         <Form
           onFinish={handleOk}

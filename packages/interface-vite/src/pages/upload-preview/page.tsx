@@ -221,7 +221,7 @@ export const UploadPreview = () => {
       </Spin>
       {!list?.length && !loading && (
         <Empty
-          className="m-y-24px mt-30vh"
+          className="m-y-24px h-30vh flex justify-center items-center"
           image={Empty.PRESENTED_IMAGE_SIMPLE}
         />
       )}

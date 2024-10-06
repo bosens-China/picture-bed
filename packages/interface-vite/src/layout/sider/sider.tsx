@@ -59,7 +59,13 @@ export const Sider = () => {
         case 'delete':
           await modal.confirm({
             title: `删除提醒`,
-            content: '确定要删除该用户吗？',
+            content: (
+              <>
+                确定要删除该用户吗？
+                <br />
+                删除数据只是在工作台隐藏用户，后续如果添加相同用户标识的用户数据依然存在。
+              </>
+            ),
             onOk() {
               dispatch(removeUser(key));
               message.success('删除成功');
