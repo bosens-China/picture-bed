@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - 设置剪切板和并发设置功能补全，对剪切板功能增强
 - 添加删除用户功能
 - 添加删除图片功能，添加列表预览
+- 添加信息统计，对页面布局调整，改为流式滚动
 
 ### 🐛 Bug Fixes
 
