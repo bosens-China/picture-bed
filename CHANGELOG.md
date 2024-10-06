@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - 添加删除用户功能
 - 添加删除图片功能，添加列表预览
 - 添加信息统计，对页面布局调整，改为流式滚动
+- 新增添加用户提醒，对埋点多次触发问题修订，对项目为空展示优化
 
 ### 🐛 Bug Fixes
 
