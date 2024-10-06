@@ -1,24 +1,16 @@
-import { Space } from 'antd';
-import classnames from 'classnames';
-
+import { Space, theme } from 'antd';
 import { Upload } from '@/components/upload/upload';
-import { useMemo } from 'react';
-import { useTheme } from '@/hooks/useTheme';
 
 export const Header = () => {
-  const theme = useTheme();
-  const className = useMemo(() => {
-    // @unocss-include
-    return classnames([
-      `flex p-x-24px items-center h-64px`,
-      {
-        'bg-#fff': theme === 'light',
-      },
-    ]);
-  }, [theme]);
+  const { token } = theme.useToken();
+
   return (
-    <div className={className}>
-      {/* <a href="/" className="flex-1">
+    <>
+      <div
+        className={`flex p-x-24px items-center min-h-50px pos-fixed top-0 left-280px z-1 right-0`}
+        style={{ backgroundColor: `var(--themeColor, ${token.colorBgLayout})` }}
+      >
+        {/* <a href="/" className="flex-1">
         <Title
           style={{
             margin: 0,
@@ -40,10 +32,12 @@ export const Header = () => {
           </Space>
         </Title>
       </a> */}
-      <div className="flex-1"></div>
-      <Space size="large">
-        <Upload></Upload>
-      </Space>
-    </div>
+        <div className="flex-1"></div>
+        <Space size="large">
+          <Upload></Upload>
+        </Space>
+      </div>
+      <div className="h-50px z--1"></div>
+    </>
   );
 };

@@ -14,6 +14,8 @@ if (rootEl) {
       <ConfigProvider
         locale={zhCN}
         theme={{
+          cssVar: true,
+          hashed: false,
           components: {
             Layout: {
               headerBg: '#fff',

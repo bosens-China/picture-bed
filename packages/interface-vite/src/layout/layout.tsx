@@ -1,4 +1,4 @@
-import { Layout } from 'antd';
+import { Layout, theme } from 'antd';
 import { Footer as LayoutFooter } from './footer';
 import { Header as LayoutHeader } from './header';
 import { RootSider } from './sider/root-sider';
@@ -8,8 +8,9 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import { addUser } from '@/store/features/users/slice';
 import { useNavigate } from 'react-router-dom';
+import { useStyle } from '@/hooks/useStyle';
 
-const { Content, Footer } = Layout;
+const { useToken } = theme;
 
 export const AppLayout = () => {
   const siderStyle: React.CSSProperties = {
@@ -38,6 +39,18 @@ export const AppLayout = () => {
     }
   }, [users.length]);
 
+  const { token } = useToken();
+
+  /*
+   * 注入一些样式到css中
+   */
+
+  useStyle({
+    body: {
+      'background-color': token.colorBgLayout,
+    },
+  });
+
   return (
     <>
       {/* <Layout className="h-100vh">
@@ -52,15 +65,20 @@ export const AppLayout = () => {
         <div style={siderStyle}>
           <RootSider></RootSider>
         </div>
-        <Layout style={{ marginInlineStart: 280 }}>
+        <main style={{ marginInlineStart: 280 }} className="w-100vw">
           <LayoutHeader></LayoutHeader>
-          <Content>
+          <div
+            style={{ backgroundColor: `var(--themeColor)` }}
+            className="m-12px mb-0"
+          >
             <Outlet />
-          </Content>
-          <Footer style={{ textAlign: 'center' }}>
+          </div>
+          <footer
+            style={{ textAlign: 'center', background: token.colorBgLayout }}
+          >
             <LayoutFooter></LayoutFooter>
-          </Footer>
-        </Layout>
+          </footer>
+        </main>
       </Layout>
     </>
   );

@@ -11,7 +11,7 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import * as _ from 'lodash-es';
-import { useTheme } from '@/hooks/useTheme';
+import { useNavigate } from 'react-router-dom';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -22,6 +22,7 @@ export interface Edit {
 export const Sider = () => {
   const { users, selected } = useAppSelector((state) => state.users);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { modal, message } = App.useApp();
 
   const [edit, setEdit] = useState<Edit>({});
@@ -69,8 +70,6 @@ export const Sider = () => {
     [dispatch, message, modal],
   );
 
-  const theme = useTheme();
-
   const items = useMemo<MenuItem[]>(() => {
     return [
       {
@@ -81,7 +80,7 @@ export const Sider = () => {
           </div>
         ),
         style: {
-          background: theme === 'dark' ? undefined : '#fff',
+          background: `var(--themeColor)`,
         },
       },
       ...users.map((f) => {
@@ -112,7 +111,7 @@ export const Sider = () => {
         };
       }),
     ];
-  }, [operateClick, operateItems, theme, users]);
+  }, [operateClick, operateItems, users]);
 
   const [open, setOpen] = useState(false);
 
@@ -126,6 +125,8 @@ export const Sider = () => {
       return;
     }
     dispatch(setSelected(e.key));
+    // 更改路由
+    navigate(e.key);
   };
   return (
     <>

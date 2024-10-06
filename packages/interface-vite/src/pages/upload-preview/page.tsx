@@ -42,7 +42,8 @@ export const UploadPreview = () => {
    */
   const [numberChanges, setNumberChanges] = useState(0);
   const activation = useAppSelector(activationItem);
-  const { loading, data, pagination } = usePagination(
+
+  const { pagination, data, loading } = usePagination(
     ({ pageSize, current }) => {
       return imgHistory({ pageSize, current, uid: activation?.uid || '' });
     },
@@ -68,16 +69,13 @@ export const UploadPreview = () => {
     });
   }, [data?.list]);
 
-  const getDOm = () => {
-    return document.querySelector('.upload-preview .overflow-y-auto');
-  };
-  const position = useScroll(getDOm());
+  const position = useScroll();
 
   useCssVariables('--scroll-top', `${position?.top || 0}px`);
 
   // 分页变化滚动到顶部
   useEffect(() => {
-    getDOm()!.scroll({ top: 0, behavior: 'smooth' });
+    window.scroll({ top: 0 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.current]);
 
@@ -93,16 +91,15 @@ export const UploadPreview = () => {
   });
 
   return (
-    <div className="p-12px upload-preview flex flex-col">
+    <div className="upload-preview">
       <Spin
         spinning={loading}
         tip="加载中..."
         wrapperClassName={classnames([
-          `flex-1 overflow-x-hidden overflow-y-auto`,
-          { hidden: !loading && !list?.length },
+          { hidden: !loading && !list?.length, 'min-h-100px': loading },
         ])}
       >
-        <Row gutter={[8, 16]} className="my-12px">
+        <Row gutter={[6, 12]} className="mb-0">
           {list?.map((item) => {
             const name = item.fileName.split('/').at(-1) || '';
             const time = dayjs(item.time).format('YYYY-MM-DD HH:mm:ss');
@@ -231,7 +228,7 @@ export const UploadPreview = () => {
       {
         <div
           className={classnames([
-            'flex justify-center p-y-24px',
+            'flex justify-center p-y-12px',
             {
               'hidden!': !list?.length,
             },
