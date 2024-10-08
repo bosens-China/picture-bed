@@ -24,18 +24,43 @@ if (!IS_ELECTRON) {
   });
 }
 
-const rootEl = document.getElementById('root');
-if (rootEl) {
-  const root = ReactDOM.createRoot(rootEl);
-  root.render(
+if (typeof window !== 'undefined') {
+  const rootEl = document.getElementById('root');
+  const dom = (
     <React.StrictMode>
       <Provider store={store}>
         <App>
           <AppProvider>
-            <Router></Router>
+            <Router />
           </AppProvider>
         </App>
       </Provider>
-    </React.StrictMode>,
+    </React.StrictMode>
   );
+  if (import.meta.env.DEV) {
+    const root = ReactDOM.createRoot(rootEl!);
+    root.render(dom);
+  } else {
+    ReactDOM.hydrateRoot(rootEl!, dom);
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function prerender(data: any) {
+  const { renderToString } = await import('react-dom/server');
+  const { parseLinks } = await import('vite-prerender-plugin/parse');
+  const { StaticRouter } = await import('react-router-dom/server'); // 导入 StaticRouter
+
+  const html = await renderToString(
+    <StaticRouter location={data.url}>
+      <App>
+        <AppProvider>
+          <Router />
+        </AppProvider>
+      </App>
+    </StaticRouter>,
+  );
+  const links = parseLinks(html);
+
+  return { html, links };
 }

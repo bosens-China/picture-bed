@@ -44,7 +44,7 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
     values.uid ||= values.label as string;
     values.key = values.uid;
     /*
-     * 如果是新增用户，调用一次查询接口判断用户是否已经存在了
+     * 如果是新增分组，调用一次查询接口判断分组是否已经存在了
      * 如果存在则进行弹窗提示，是否继续后续的步骤
      * 如果编辑则不等于自身的时候进行判断
      */
@@ -65,7 +65,8 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
         title: `新建提示`,
         content: (
           <>
-            用户标识 <Tag>{values.uid}</Tag> 已经存在，是否继续添加用户？
+            远程用户标识 <Tag>{values.uid}</Tag>{' '}
+            已经存在（可能其他用户也创建了相同的用户标识），是否继续添加分组？
           </>
         ),
       });
@@ -87,7 +88,7 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
   };
 
   const title = useMemo(() => {
-    return edit.key ? `编辑用户` : `添加用户`;
+    return edit.key ? `编辑分组` : `添加分组`;
   }, [edit]);
 
   const initialValues = useMemo(() => {
@@ -123,15 +124,15 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
           initialValues={initialValues}
         >
           <Form.Item<FieldType>
-            label="名称"
+            label="分组名称"
             name="label"
             rules={[
               {
                 required: true,
-                message: '请输入用户名称!',
+                message: '请输入分组名称!',
               },
               {
-                validator(_rule, value, callback) {
+                validator(_rule, value) {
                   /*
                    * 新增则全部校验，编辑则去除自身校验更改名称是否重复
                    */
@@ -139,9 +140,9 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
                     .filter((f) => f.key !== edit.key)
                     .map((f) => f.label);
                   if (arr.includes(value)) {
-                    return callback(`用户名称重复。`);
+                    return Promise.reject(`用户名称重复。`);
                   }
-                  return callback();
+                  return Promise.resolve();
                 },
               },
             ]}
@@ -161,7 +162,7 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
             label={
               <Space align="center">
                 用户标识
-                <Tooltip title="用于区分用户信息所使用，不同用户上传的资源文件不同，如果不输入则与名称保持一致。">
+                <Tooltip title="用于区分用户信息所使用，不同分组上传的资源文件不同，如果不输入则与名称保持一致。">
                   <Tag color="processing" className="cursor-pointer">
                     说明
                   </Tag>
@@ -171,23 +172,23 @@ export const SiderModal: FC<Props> = ({ open, setOpen, edit, setEdit }) => {
             name="uid"
             rules={[
               {
-                validator(_rule, value, callback) {
+                validator(_rule, value) {
                   if (!value) {
-                    return callback();
+                    return Promise.resolve();
                   }
                   const arr = users
                     .filter((f) => f.key !== edit.key)
                     .map((f) => f.uid);
                   if (arr.includes(value)) {
-                    return callback(`用户标识重复。`);
+                    return Promise.reject(`用户标识重复。`);
                   }
-                  return callback();
+                  return Promise.resolve();
                 },
               },
             ]}
             className={!expand ? 'op-0 pos-absolute z--1' : ''}
           >
-            <Input placeholder="用于区分用户信息所使用，不同用户上传的资源文件不同"></Input>
+            <Input placeholder="用于区分用户信息所使用，不同分组上传的资源文件不同"></Input>
           </Form.Item>
         </Form>
       </Modal>

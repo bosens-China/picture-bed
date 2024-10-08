@@ -34,7 +34,7 @@ export const AppLayout = () => {
         return res.get();
       });
 
-      dispatch(addUser({ label: '默认用户', key: 'main', uid: res.visitorId }));
+      dispatch(addUser({ label: '默认分组', key: 'main', uid: res.visitorId }));
       navigate('/');
     }
   }, [users.length]);

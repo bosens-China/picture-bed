@@ -27,7 +27,7 @@ export interface UploadBody {
    */
   filePath: string;
   /**
-   * 用户身份标识，用于区分身份所使用
+   * 分组身份标识，用于区分身份所使用
    *
    * @type {string}
    * @memberof UploadBody

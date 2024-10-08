@@ -1,7 +1,7 @@
 import { RootState } from '@/store/store';
 
 /**
- * 用户的激活项
+ * 分组的激活项
  *
  * @param {RootState} state
  * @return {*}

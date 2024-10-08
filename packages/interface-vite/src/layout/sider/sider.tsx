@@ -1,9 +1,10 @@
 import type { MenuProps } from 'antd';
-import { App, Button, Dropdown, Menu } from 'antd';
+import { App, Button, Dropdown, Menu, Space, Tag } from 'antd';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { useCallback, useMemo, useState } from 'react';
 import { removeUser, setSelected } from '@/store/features/users/slice';
 import { SiderModal } from './siderModal';
+
 import {
   DashOutlined,
   DeleteOutlined,
@@ -61,9 +62,9 @@ export const Sider = () => {
             title: `删除提醒`,
             content: (
               <>
-                确定要删除该用户吗？
+                确定要删除该分组吗？
                 <br />
-                删除数据只是在工作台隐藏用户，后续如果添加相同用户标识的用户数据依然存在。
+                删除数据只是在工作台隐藏分组，后续如果添加相同分组标识的分组数据依然存在。
               </>
             ),
             onOk() {
@@ -82,7 +83,7 @@ export const Sider = () => {
         key: 'add',
         label: (
           <div className="flex flex-1 justify-center items-center">
-            <Button icon={<PlusOutlined />}>添加用户</Button>
+            <Button icon={<PlusOutlined />}>添加分组</Button>
           </div>
         ),
         style: {
@@ -93,8 +94,14 @@ export const Sider = () => {
         return {
           ...f,
           label: (
-            <div className="flex flex-1">
-              <div className="flex-1 mr-6px">{f.label}</div>
+            <div className="flex flex-1 justify-between">
+              <div className="mr-6px flex-1">{f.label}</div>
+              {f.key === 'main' && (
+                <div className="mr-21px">
+                  <Tag color="processing">本地</Tag>
+                </div>
+              )}
+
               {f.key !== 'main' && (
                 <Dropdown
                   menu={{
@@ -104,11 +111,11 @@ export const Sider = () => {
                   }}
                   trigger={['click', 'hover']}
                 >
-                  <a
-                    onClick={(e) => e.preventDefault()}
-                    className="block pos-relative w-40px text-right"
-                  >
-                    <DashOutlined></DashOutlined>
+                  <a onClick={(e) => e.preventDefault()} className="">
+                    <Space align="center">
+                      <Tag color="processing">本地</Tag>
+                      <DashOutlined></DashOutlined>
+                    </Space>
                   </a>
                 </Dropdown>
               )}

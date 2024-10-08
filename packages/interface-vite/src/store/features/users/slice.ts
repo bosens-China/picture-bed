@@ -52,7 +52,7 @@ export interface ThemeFieldType {
 
 export interface State {
   /**
-   * 用户的列表
+   * 分组的列表
    *
    * @type {Array<MenuItem>}
    * @memberof State
@@ -81,7 +81,7 @@ export const staging = createSlice({
       state.users = _.uniqBy([...state.users, action.payload], 'key');
     },
     /**
-     * 删除用户，如果当前删除的为激活用户则会直接跳转到主用户
+     * 删除分组，如果当前删除的为激活分组则会直接跳转到主分组
      * @param state
      * @param action
      */
