@@ -202,6 +202,15 @@ importers:
         specifier: ^5.4.1
         version: 5.4.8(@types/node@22.5.5)(less@4.2.0)
 
+  packages/typora:
+    dependencies:
+      core:
+        specifier: workspace:*
+        version: link:../core
+      tsx:
+        specifier: ^4.19.1
+        version: 4.19.1
+
 packages:
   '@ampproject/remapping@2.3.0':
     resolution:

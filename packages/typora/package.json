@@ -1,0 +1,11 @@
+{
+  "name": "typora",
+  "version": "1.0.0",
+  "dependencies": {
+    "tsx": "^4.19.1",
+    "core": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsx ./src/main.ts"
+  }
+}
