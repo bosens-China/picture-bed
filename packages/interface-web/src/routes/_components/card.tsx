@@ -1,0 +1,68 @@
+import { CopyOutlined, DashOutlined } from '@ant-design/icons';
+import { App, Avatar, Button, Dropdown, Image, Tooltip } from 'antd';
+import { Daum } from 'core/api/page.js';
+import { FC } from 'react';
+import dayjs from 'dayjs';
+import copy from 'copy-text-to-clipboard';
+
+type CardProps = Daum;
+
+// 卡片
+export const Card: FC<CardProps> = ({
+  contentType,
+  fileName,
+  size,
+  time,
+  url,
+}) => {
+  // 后缀
+  const suffix = fileName.split('.').at(-1) || fileName;
+  const { message } = App.useApp();
+  return (
+    <div className="border-solid border-color-#E5E7EB border-0.5">
+      <div className="h-50 overflow-hidden flex justify-center items-center">
+        {contentType.includes('image') ? (
+          <Image className="min-w-24" src={url} />
+        ) : (
+          <Avatar size={160} className="text-size-12! max-w-90% max-h-90%">
+            {suffix}
+          </Avatar>
+        )}
+      </div>
+      <div className="p-4 text-size-3.5 lh-5">
+        <div className="color-#111827 flex items-center justify-between">
+          <div className="overflow-hidden flex-grow whitespace-nowrap text-ellipsis">
+            {fileName}
+          </div>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  label: '复制链接',
+                  key: 'copy',
+                  icon: <CopyOutlined />,
+                  onClick: () => {
+                    copy(url);
+                    message.success(`复制链接成功。`);
+                  },
+                },
+              ],
+            }}
+          >
+            <Button
+              type="text"
+              className="flex-shrink-0"
+              icon={<DashOutlined className="" />}
+            ></Button>
+          </Dropdown>
+        </div>
+        <div className="color-#6B7280 flex items-center justify-between">
+          <div>{size}</div>
+          <Tooltip title={dayjs(time).format('YYYY-MM-DD HH:mm')}>
+            <div>{dayjs(time).format('YYYY-MM-DD')}</div>
+          </Tooltip>
+        </div>
+      </div>
+    </div>
+  );
+};

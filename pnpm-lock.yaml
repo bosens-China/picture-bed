@@ -52,12 +52,13 @@ importers:
 
   packages/core:
     dependencies:
-      axios:
-        specifier: ^1.7.7
-        version: 1.7.7
       formdata-node:
         specifier: ^6.0.3
         version: 6.0.3
+    devDependencies:
+      axios:
+        specifier: ^1.7.7
+        version: 1.7.7
 
   packages/interface:
     dependencies:
@@ -149,6 +150,9 @@ importers:
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
+      copy-text-to-clipboard:
+        specifier: ^3.2.0
+        version: 3.2.0
       core:
         specifier: workspace:*
         version: link:../core
@@ -3048,6 +3052,13 @@ packages:
       {
         integrity: sha512-1j20GZTsvKNkc4BY3NpMOM8tt///wY3FpIzozTOFO2ffuZcV61nojHXVKIy3WM+7ADCy5FVhdZYHYDdgTU0yJw==,
       }
+
+  copy-text-to-clipboard@3.2.0:
+    resolution:
+      {
+        integrity: sha512-RnJFp1XR/LOBDckxTib5Qjr/PMfkatD0MUCQgdpqS8MdKiNUzBjAQBEN6oUy+jW7LI93BBG3DtMB2KOOKpGs2Q==,
+      }
+    engines: { node: '>=12' }
 
   copy-to-clipboard@3.3.3:
     resolution:
@@ -8886,6 +8897,8 @@ snapshots:
   copy-anything@2.0.6:
     dependencies:
       is-what: 3.14.1
+
+  copy-text-to-clipboard@3.2.0: {}
 
   copy-to-clipboard@3.3.3:
     dependencies:

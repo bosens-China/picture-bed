@@ -5,6 +5,7 @@ import {
   DashOutlined,
   DeleteOutlined,
   FormOutlined,
+  GithubOutlined,
   PlusOutlined,
   SearchOutlined,
   SettingOutlined,
@@ -122,7 +123,7 @@ export const Route = createRootRoute({
           <Sider
             style={siderStyle}
             width={280}
-            className="p-6 border-r-solid border-r-color-#E5E7EB"
+            className="p-6 border-r-solid border-r-color-#E5E7EB border-0.5"
           >
             <Space align="center">
               <Logo></Logo>
@@ -159,7 +160,7 @@ export const Route = createRootRoute({
             </div>
           </Sider>
           <Layout>
-            <Header className="flex justify-center px-6 border-b-solid border-b-color-#E5E7EB">
+            <Header className="flex justify-center px-6 border-b-solid border-b-color-#E5E7EB border-0.5">
               <div className="flex-1"></div>
               <Space align="center" size="large">
                 <Input
@@ -170,6 +171,23 @@ export const Route = createRootRoute({
                 <Typography.Link className="color-#4B5563 text-size-5">
                   <SettingOutlined />
                 </Typography.Link>
+                <a
+                  href="https://playground.z.wiki/img-cloud/index.html"
+                  target="_blank"
+                  rel="noreferrer"
+                  title="跳转原图床"
+                >
+                  敖武的图床
+                </a>
+                <a
+                  href="https://github.com/bosens-China/picture-bed"
+                  target="_blank"
+                  rel="noreferrer"
+                  title="跳转GitHub地址"
+                  className="text-size-2xl color-#4B5563 hover:color-#2563EB"
+                >
+                  <GithubOutlined />
+                </a>
               </Space>
             </Header>
             <Content style={{ overflow: 'initial' }} className="px-6 py-5.25">

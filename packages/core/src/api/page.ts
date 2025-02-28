@@ -1,7 +1,6 @@
 // https://playground.z.wiki/
 
 import { instance } from '../utils/request';
-import { defaultAxiosConfig } from '../main';
 
 export interface RequestParameters {
   uid: string;
@@ -41,7 +40,6 @@ export const imgHistory = async (body: RequestParameters) => {
   const { uid, current = 1, pageSize = 10 } = body;
   const { data } = await instance<ResponseParameters>({
     url: `/img/history`,
-    ...defaultAxiosConfig,
     method: 'get',
     params: {
       uid,

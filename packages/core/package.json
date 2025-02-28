@@ -1,13 +1,20 @@
 {
   "name": "core",
   "version": "1.0.0",
+  "type": "module",
   "main": "./src/main.ts",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.7.7",
     "formdata-node": "^6.0.3"
   },
+  "devDependencies": {
+    "axios": "^1.7.7"
+  },
+  "peerDependencies": {
+    "axios": ">=1.0.0"
+  },
   "exports": {
+    ".": "./SRC/main.ts",
     "./upload-browser": "./src/utils/upload-browser.ts",
     "./api/*": "./src/api/*",
     "./config.json": "./src/config.json"

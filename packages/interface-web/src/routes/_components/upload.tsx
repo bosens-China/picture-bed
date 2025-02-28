@@ -1,7 +1,8 @@
 import { useProjectStore } from '@/store/project';
+import { globalFunctions } from '@/utils/global-functions';
 import { CloudUploadOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-import { Dropdown, Space, theme, Upload, UploadProps } from 'antd';
+import { App, Dropdown, Space, theme, Upload, UploadProps } from 'antd';
 // import { uploadFiles, UploadFilesBody } from 'core';
 // import { browserUpload, UploadBodyBrowser } from 'core/api/upload-browser.js';
 import { UploadBrowser } from 'core/upload-browser';
@@ -9,94 +10,56 @@ import { UploadBrowser } from 'core/upload-browser';
 export const MyUpload = () => {
   const { token } = theme.useToken();
   const { colorBgBase } = token;
+  const { message } = App.useApp();
 
-  const { loading, run } = useRequest(
+  const { run } = useRequest(
     new UploadBrowser({
       userConfig: {
         onUploadProgress(progressEvent, body) {
-          console.log({
-            progressEvent,
-            body,
+          // @ts-expect-error 忽略错误
+          const key = body.file._id;
+          message.open({
+            key,
+            type: 'loading',
+            content: `正在上传 ${body.file.name} 文件，当前进度：${Math.floor((progressEvent.progress ?? 0) * 100)}%`,
           });
         },
       },
     }).browserUpload,
-    // async (files: UploadFilesBody<UploadBodyBrowser>['files']) => {
-    //   return uploadFiles(browserUpload, {
-    //     files: files,
-    //     config: {
-    //       // maxConcurrency: requiredBase.concurrentQuantity,
-    //       // waitingTime: requiredBase.waitingInterval,
-    //       onUploadProgress(progressEvent, body) {
-    //         // setSchedule((obj) => {
-    //         //   const file = body.file as unknown as UploadFile;
-    //         //   obj[file.uid] = progressEvent.progress || 0;
-    //         //   return { ...obj };
-    //         // });
-    //       },
-    //       messageCallback: ({ item, err, data }) => {
-    //         // form.setFieldValue(
-    //         //   'property',
-    //         //   property?.map((f) => {
-    //         //     const file = item.file as unknown as UploadFile;
-    //         //     if (f.uid === file.uid) {
-    //         //       f.status = data ? 'done' : 'error';
-    //         //       if (err) {
-    //         //         f.response = getErrorMsg(err);
-    //         //       }
-    //         //     }
-    //         //     return { ...f };
-    //         //   }),
-    //         // );
-    //       },
-    //     },
-    //   });
-    // },
     {
       manual: true,
       /*
        * 将上传的资源全部重置为loading
        * 排除掉已经成功的元素
        */
-      onBefore() {
-        // form.setFieldValue(
-        //   'property',
-        //   property?.map((f) => {
-        //     if (f.originFileObj?.uid && cacheMap.get(f.originFileObj?.uid)) {
-        //       return f;
-        //     }
-        //     return {
-        //       ...f,
-        //       status: 'uploading',
-        //     };
-        //   }),
-        // );
+      onBefore([body]) {
+        const key = `${performance.now()}`;
+        // @ts-expect-error 忽略错误
+        body.file._id = key;
+        message.open({
+          key,
+          type: 'loading',
+          content: `开始上传文件 ${body.file.name}`,
+        });
       },
-      onSuccess(data) {
-        debugger;
-        // message.destroy();
-        // const multifile = data.length > 1;
-        // if (data.every((f) => f.status === 'rejected')) {
-        //   message.error(
-        //     `上传文件${multifile ? '全部' : ''}失败，鼠标悬浮文件信息可以查看具体错误信息。`,
-        //   );
-        //   return;
-        // }
-        // if (data.some((f) => f.status === 'rejected')) {
-        //   message.warning(
-        //     `未${multifile ? '全部' : ''}上传成功，鼠标悬浮文件信息可以查看具体错误信息。`,
-        //   );
-        // }
-        // message.success('上传成功');
-        // event?.emit(EventName.uploadChanges);
-        // /*
-        //  * 上传成功，给表单一个标识标记上传成功
-        //  */
-        // property?.forEach((item) => {
-        //   if (item.status === 'done') {
-        //     cacheMap.set(item.originFileObj?.uid || '', true);
-        //   }
-        // });
+      onError(e, [body]) {
+        // @ts-expect-error 忽略错误
+        const key = body.file._id;
+        message.open({
+          key,
+          type: 'error',
+          content: e.message,
+        });
+      },
+      onSuccess(_data, [{ file }]) {
+        // @ts-expect-error 忽略错误
+        const key = file._id;
+        message.open({
+          key,
+          type: 'success',
+          content: `上传成功`,
+        });
+        globalFunctions.updateList?.();
       },
     },
   );
