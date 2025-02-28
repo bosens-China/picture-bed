@@ -44,6 +44,7 @@ All notable changes to this project will be documented in this file.
 - 修复上传成功文件依然重复上传
 - 修复main.ts包含未使用npm模块
 - 对git提交文件缺失修复
+- 修复core exports. 拼写错误
 
 ### 💼 Other
 
