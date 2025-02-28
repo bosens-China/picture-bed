@@ -202,7 +202,7 @@ export const Route = createRootRoute({
           setEdit={setEdit}
         ></SiderModal>
 
-        <TanStackRouterDevtools />
+        {import.meta.env.DEV && <TanStackRouterDevtools />}
       </>
     );
   },
