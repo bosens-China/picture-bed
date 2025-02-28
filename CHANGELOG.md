@@ -46,6 +46,7 @@ All notable changes to this project will be documented in this file.
 - 对git提交文件缺失修复
 - 修复core exports. 拼写错误
 - 修复生产环境下baseUrl错误
+- 修复cors请求头错误
 
 ### 💼 Other
 
