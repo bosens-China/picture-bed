@@ -65,6 +65,7 @@ All notable changes to this project will be documented in this file.
 
 - 修改左侧布局宽度和上传弹窗文字
 - Spin和分页位置调整，对预览文件添加zip和word常见格式图片
+- 对icon重复图标关闭，对生产环境开启路由工具关闭
 
 ### ⚙️ Miscellaneous Tasks
 
