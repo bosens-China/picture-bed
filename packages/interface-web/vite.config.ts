@@ -80,7 +80,7 @@ export default defineConfig(({ mode, command }) => {
             ...Object.keys(dependencies)
               .filter(
                 (f) =>
-                  !['@unocss', '@iconify-json'].find((item) =>
+                  !['@unocss', '@iconify-json', 'antd'].find((item) =>
                     f.startsWith(item),
                   ),
               )

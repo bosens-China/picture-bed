@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { nodeConfiguration } from '../config.json';
+import { defaultAxiosConfig } from '../main';
 
 export const instance = axios.create({
-  ...nodeConfiguration,
+  ...defaultAxiosConfig,
 });
 
 instance.interceptors.response.use(

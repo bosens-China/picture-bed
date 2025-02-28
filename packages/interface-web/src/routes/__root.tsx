@@ -2,7 +2,6 @@ import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import React, { useState } from 'react';
 import {
-  CloudUploadOutlined,
   DashOutlined,
   DeleteOutlined,
   FormOutlined,
@@ -27,6 +26,7 @@ import { useProject } from '@/hooks/use-project';
 import { SiderModal } from './_components/siderModal';
 import { ProjectItem, useProjectStore } from '@/store/project';
 import { useInspect } from '@/hooks/use-inspect';
+import { MyUpload } from './_components/upload';
 
 const { Header, Content, Sider } = Layout;
 
@@ -130,15 +130,8 @@ export const Route = createRootRoute({
                 敖武的图床
               </div>
             </Space>
-            <Button
-              type="primary"
-              icon={<CloudUploadOutlined />}
-              size="large"
-              block
-              className="mt-7 mb-6.75"
-            >
-              上传图片
-            </Button>
+            <MyUpload></MyUpload>
+
             <div>
               <div className="color-#6B7280 text-size-3.5 lh-5">项目列表</div>
               <Menu
