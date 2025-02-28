@@ -14,7 +14,7 @@
     "axios": ">=1.0.0"
   },
   "exports": {
-    ".": "./SRC/main.ts",
+    ".": "./src/main.ts",
     "./upload-browser": "./src/utils/upload-browser.ts",
     "./api/*": "./src/api/*",
     "./config.json": "./src/config.json"
