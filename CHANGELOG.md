@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - 新增添加用户提醒，对埋点多次触发问题修订，对项目为空展示优化
 - 多用户改为分组，对本地添加tag明显提醒
 - 添加typora的使用
+- 对上传接口完善，对刷新列表对接
 
 ### 🐛 Bug Fixes
 
