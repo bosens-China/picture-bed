@@ -1,5 +1,5 @@
 {
-  "browserConfiguration": {
+  "browserProxy": {
     "baseURL": "/api_core"
   },
   "nodeConfiguration": {
@@ -7,5 +7,8 @@
     "headers": {
       "origin": "https://playground.z.wiki"
     }
+  },
+  "browserConfiguration": {
+    "baseURL": "https://playground.z.wiki"
   }
 }

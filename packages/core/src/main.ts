@@ -12,7 +12,7 @@ import { CreateAxiosDefaults } from 'axios';
 //   RunParallelReturn,
 // } from './utils/speedLimiter';
 
-import { browserConfiguration } from './config.json';
+import { browserProxy } from './config.json';
 
 // export type UploadProgress = (
 //   progressEvent: AxiosProgressEvent,
@@ -99,7 +99,7 @@ export const defaultAxiosConfig: Pick<
   CreateAxiosDefaults<unknown>,
   'baseURL' | 'headers'
 > = {
-  ...browserConfiguration,
+  ...browserProxy,
 };
 
 // /**

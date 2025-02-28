@@ -13,7 +13,7 @@ const require = createRequire(import.meta.url);
 const config: typeof Config = require(
   path.join(require.resolve('core'), '../config.json'),
 );
-const { browserConfiguration, nodeConfiguration } = config;
+const { browserProxy, nodeConfiguration } = config;
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -59,11 +59,11 @@ export default defineConfig(({ mode, command }) => {
     server: {
       port: 4444,
       proxy: {
-        [browserConfiguration.baseURL]: {
+        [browserProxy.baseURL]: {
           target: nodeConfiguration.baseURL,
           changeOrigin: true,
           rewrite: (path) => {
-            return path.replace(browserConfiguration.baseURL, '');
+            return path.replace(browserProxy.baseURL, '');
           },
           headers: {
             origin: nodeConfiguration.baseURL,
