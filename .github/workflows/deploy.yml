@@ -43,12 +43,12 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Install dependencies
         run: pnpm install # 或 pnpm install / yarn install / bun install
-      - name: Build with interface-vite
-        run: pnpm -F interface-vite run build
+      - name: Build with interface-web
+        run: pnpm -F interface-web run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./packages/interface-vite/dist
+          path: ./packages/interface-web/dist
 
   # 部署工作
   deploy:

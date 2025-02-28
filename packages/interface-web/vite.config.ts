@@ -6,6 +6,8 @@ import { createRequire } from 'module';
 import path from 'node:path';
 import type Config from 'core/config.json';
 import { dependencies } from './package.json';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
+import svgr from 'vite-plugin-svgr';
 
 const require = createRequire(import.meta.url);
 const config: typeof Config = require(
@@ -24,7 +26,27 @@ export default defineConfig(({ mode, command }) => {
 
   return {
     base,
-    plugins: [react(), UnoCSS()],
+    plugins: [
+      TanStackRouterVite({
+        target: 'react',
+        autoCodeSplitting: true,
+        routeFileIgnorePattern: `.((css|const).ts)|_components`,
+      }),
+      svgr(),
+      react({
+        babel: {
+          plugins: [
+            [
+              'babel-plugin-react-compiler',
+              {
+                target: '19',
+              },
+            ],
+          ],
+        },
+      }),
+      UnoCSS(),
+    ],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),

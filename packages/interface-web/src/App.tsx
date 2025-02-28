@@ -1,4 +1,5 @@
 import { ConfigProvider, theme as AppTheme } from 'antd';
+import '@ant-design/v5-patch-for-react-19';
 import {
   createContext,
   FC,

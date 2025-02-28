@@ -1,6 +1,6 @@
 {
   "references": [
-    { "path": "./packages/interface-vite" },
+    { "path": "./packages/interface-web" },
     { "path": "./packages/core" },
     { "path": "./packages/interface-electron" },
     {
