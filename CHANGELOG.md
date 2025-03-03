@@ -47,6 +47,7 @@ All notable changes to this project will be documented in this file.
 - 修复 core exports. 拼写错误
 - 修复生产环境下 baseUrl 错误
 - 修复 cors 请求头错误
+- 修复编辑分组未生效问题
 
 ### 💼 Other
 
