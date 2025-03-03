@@ -64,6 +64,7 @@ export const MyUpload = () => {
     },
   );
   const current = useProjectStore((state) => state.current);
+  const projects = useProjectStore((state) => state.projects);
   const baseProps: UploadProps = {
     multiple: true,
     name: 'property',
@@ -90,12 +91,13 @@ export const MyUpload = () => {
                 上传文件夹
               </Upload>
             ),
-
+            disabled: !projects.length,
             key: 'dir',
             icon: <FolderOpenOutlined />,
           },
         ],
       }}
+      disabled={!projects.length}
     >
       <Upload {...baseProps}>
         <Space style={{ color: colorBgBase }}>
