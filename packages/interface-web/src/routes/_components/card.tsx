@@ -19,8 +19,8 @@ export const Card: FC<CardProps> = ({
   const suffix = fileName.split('.').at(-1) || fileName;
   const { message } = App.useApp();
   return (
-    <div className="border-solid border-color-#E5E7EB border-0.5">
-      <div className="h-50 overflow-hidden flex justify-center items-center">
+    <div className="border-solid border-color-border-color border-0.5 rounded-2 bg-card-bg">
+      <div className="h-50 overflow-hidden flex justify-center items-center rounded-2">
         {contentType.includes('image') ? (
           <Image className="min-w-24" src={url} />
         ) : (
@@ -30,7 +30,7 @@ export const Card: FC<CardProps> = ({
         )}
       </div>
       <div className="p-4 text-size-3.5 lh-5">
-        <div className="color-#111827 flex items-center justify-between">
+        <div className="color-title flex items-center justify-between">
           <div className="overflow-hidden flex-grow whitespace-nowrap text-ellipsis">
             {fileName}
           </div>
@@ -56,7 +56,7 @@ export const Card: FC<CardProps> = ({
             ></Button>
           </Dropdown>
         </div>
-        <div className="color-#6B7280 flex items-center justify-between">
+        <div className="color-secondary flex items-center justify-between">
           <div>{size}</div>
           <Tooltip title={dayjs(time).format('YYYY-MM-DD HH:mm')}>
             <div>{dayjs(time).format('YYYY-MM-DD')}</div>

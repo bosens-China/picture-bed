@@ -16,10 +16,10 @@ export const Empty: FC<Props> = ({ type }) => {
           <EmptyProject className="w-24 h-24"></EmptyProject>
         )}
       </div>
-      <div className="color-#111827 lh-8 font-600 text-size-4 mt-4.75">
+      <div className="color-title lh-8 font-600 text-size-4 mt-4.75">
         {type === 'assets' ? `暂无图片` : `暂无项目`}
       </div>
-      <div className="color-#4B5563 lh-6">
+      <div className="color-desc lh-6">
         {type === 'assets'
           ? `当前还没有上传任何图片，支持 JPG、PNG、SVG 等格式`
           : `您还没有创建任何项目，开始创建您的第一个项目吧`}

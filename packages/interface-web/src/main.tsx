@@ -2,9 +2,8 @@ import '@ant-design/v5-patch-for-react-19';
 import './configuration-modification';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import zhCN from 'antd/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
-import { App, ConfigProvider } from 'antd';
+import { App } from 'antd';
 import '@/assets/styles/converge.less';
 import 'virtual:uno.css';
 // import { setAxiosConfiguration } from 'core';
@@ -12,6 +11,7 @@ import 'virtual:uno.css';
 import { RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import { createHashHistory, createRouter } from '@tanstack/react-router';
+import { Theme } from '@/components/theme/theme';
 
 const hashHistory = createHashHistory();
 
@@ -41,35 +41,11 @@ if (rootEl) {
   const root = ReactDOM.createRoot(rootEl);
   root.render(
     <React.StrictMode>
-      <ConfigProvider
-        locale={zhCN}
-        theme={{
-          cssVar: true,
-          token: {
-            colorPrimary: `#2563EB`,
-            borderRadiusOuter: 8,
-          },
-          components: {
-            Layout: {
-              headerBg: '#fff',
-              //     headerPadding: 0,
-              //     footerPadding: 0,
-              siderBg: '#fff',
-              colorBgLayout: '#fff',
-            },
-            Menu: {
-              activeBarBorderWidth: 0,
-            },
-            //   Card: {
-            //     paddingLG: 12,
-            //   },
-          },
-        }}
-      >
+      <Theme>
         <App>
           <RouterProvider router={router} />
         </App>
-      </ConfigProvider>
+      </Theme>
     </React.StrictMode>,
   );
 }

@@ -10,7 +10,7 @@ import {
   SearchOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { MenuProps } from 'antd';
+import { MenuProps, Tooltip } from 'antd';
 import {
   App,
   Button,
@@ -123,18 +123,18 @@ export const Route = createRootRoute({
           <Sider
             style={siderStyle}
             width={280}
-            className="p-6 border-r-solid border-r-color-#E5E7EB border-0.5"
+            className="p-6 border-r-solid border-r-color-border-color border-0.5"
           >
             <Space align="center">
               <Logo></Logo>
-              <div className="color-#111827 lh-8 font-700 text-size-6">
+              <div className="color-title lh-8 font-700 text-size-6">
                 敖武的图床
               </div>
             </Space>
             <MyUpload></MyUpload>
 
             <div>
-              <div className="color-#6B7280 text-size-3.5 lh-5">项目列表</div>
+              <div className="color-secondary text-size-3.5 lh-5">项目列表</div>
               <Menu
                 theme="light"
                 mode="inline"
@@ -160,14 +160,19 @@ export const Route = createRootRoute({
             </div>
           </Sider>
           <Layout>
-            <Header className="flex justify-center px-6 border-b-solid border-b-color-#E5E7EB border-0.5">
-              <div className="flex-1"></div>
+            <Header className="flex justify-center px-6 border-b-solid border-b-color-border-color border-0.5">
+              <div className="flex-1">
+                <Tooltip title="等待接口接入...">
+                  <Input
+                    prefix={<SearchOutlined></SearchOutlined>}
+                    placeholder="搜索图片"
+                    className="w-64"
+                    disabled={true}
+                  ></Input>
+                </Tooltip>
+              </div>
+
               <Space align="center" size="large">
-                <Input
-                  prefix={<SearchOutlined></SearchOutlined>}
-                  placeholder="搜索图片"
-                  className="w-64"
-                ></Input>
                 <Typography.Link className="color-#4B5563 text-size-5">
                   <SettingOutlined />
                 </Typography.Link>

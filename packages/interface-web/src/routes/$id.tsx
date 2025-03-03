@@ -8,6 +8,7 @@ import { useEffect, useMemo } from 'react';
 import { Empty } from './_components/empty';
 import { globalFunctions } from '@/utils/global-functions';
 import { Card } from './_components/card';
+import classnames from 'classnames';
 
 export const Route = createFileRoute('/$id')({
   component: Index,
@@ -69,22 +70,31 @@ function Index() {
 
   return (
     <div>
-      <div className="color-#111827 text-size-4.5 lh-7">全部图片</div>
+      <div className="color-title text-size-4.5 lh-7">全部图片</div>
       <Spin tip="Loading..." spinning={loading} delay={100}>
         <div
-          className="my-5.75 gap-4 grid rounded-4"
-          style={{
-            gridTemplateColumns: `repeat(${rowTotal}, minmax(0, 1fr))`,
-          }}
+          className={classnames([
+            {
+              'h-[calc(100vh-215px)]': data?.list.length,
+            },
+          ])}
         >
-          {data?.list.map((item) => {
-            return <Card {...item} key={item.id}></Card>;
-          })}
+          <div
+            className={'my-5.75 gap-4 grid overflow-auto'}
+            style={{
+              gridTemplateColumns: `repeat(${rowTotal}, minmax(0, 1fr))`,
+            }}
+          >
+            {data?.list.map((item) => {
+              return <Card {...item} key={item.id}></Card>;
+            })}
+          </div>
         </div>
       </Spin>
       {!isNull && !!data?.total && (
         <div className="flex justify-center">
           <Pagination
+            className="flex-1 [&_.ant-pagination-total-text]-flex-1"
             showTotal={(total) =>
               `第 ${pagination.current} 页，共 ${total} 条数据`
             }
