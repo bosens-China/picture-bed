@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - 修复ci拼写错误
 - 对ci触发分支错误修复
 - 对ci报错修复
+- 修复tag.yml失败
 
 ### ⚙️ Miscellaneous Tasks
 
