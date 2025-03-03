@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - 修复ci拼写错误
 - 对ci触发分支错误修复
 
+### ⚙️ Miscellaneous Tasks
+
+- 额外添加触发事件
+
 ## [1.0.0] - 2025-03-03
 
 ### 🚀 Features
