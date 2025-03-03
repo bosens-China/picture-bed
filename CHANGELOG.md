@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - 对ci触发分支错误修复
 - 对ci报错修复
 - 修复tag.yml失败
+- 对tag.yml报错处理
 
 ### ⚙️ Miscellaneous Tasks
 
