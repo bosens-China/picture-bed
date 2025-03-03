@@ -22,8 +22,11 @@ jobs:
           node-version: 20
           cache: pnpm
 
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Build Electron App
-        run: pnpm -F interface-web run build
+        run: pnpm -F interface-electron run build
         env:
           NODE_ENV: production
 
