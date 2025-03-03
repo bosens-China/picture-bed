@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### 🐛 Bug Fixes
+
+- 修复ci拼写错误
+
+## [1.0.0] - 2025-03-03
+
 ### 🚀 Features
 
 - 初始化项目结构
