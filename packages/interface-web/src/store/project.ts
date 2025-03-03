@@ -5,17 +5,21 @@ import * as _ from 'lodash-es';
 
 export interface ProjectItem {
   id: string;
-  total: number;
+  total?: number;
   title: string;
+  // 用户标识
+  userID: string;
 }
 
 export interface ProjectStore {
   projects: ProjectItem[];
-  // 当前激活
+  // 当前激活id
   current: string | null;
-  addProject: (project: ProjectItem) => void;
+  addProject: (
+    project: Omit<ProjectItem, 'id'> & Partial<Pick<ProjectItem, 'id'>>,
+  ) => void;
   // 编辑项目
-  editProject: (project: ProjectItem) => void;
+  editProject: (id: string, project: Omit<ProjectItem, 'id'>) => void;
   removeProject: (id: string) => void;
   setCurrent: (id: string | null) => void;
 }
@@ -28,7 +32,11 @@ export const useProjectStore = create(
       addProject: (project) =>
         set(
           produce((state: ProjectStore) => {
-            state.projects = _.uniqBy([...state.projects, project], 'id');
+            const obj = {
+              ...project,
+              id: project.id ?? project.userID,
+            };
+            state.projects = _.uniqBy([...state.projects, obj], 'id');
           }),
         ),
       removeProject: (id) =>
@@ -37,15 +45,11 @@ export const useProjectStore = create(
             state.projects = state.projects.filter((item) => item.id !== id);
           }),
         ),
-      editProject: (project) =>
+      editProject: (id, project) =>
         set(
           produce((state: ProjectStore) => {
-            const index = state.projects.findIndex(
-              (item) => item.id === project.id,
-            );
-            if (index !== -1) {
-              state.projects[index] = project;
-            }
+            const index = state.projects.findIndex((item) => item.id === id);
+            Object.assign(state.projects[index], project);
           }),
         ),
       setCurrent: (id) => set({ current: id }),

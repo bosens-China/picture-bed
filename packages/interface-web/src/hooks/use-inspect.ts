@@ -6,7 +6,6 @@ export const useInspect = () => {
   const { current, projects, setCurrent } = useProjectStore();
   const navigate = useNavigate();
   const { href } = useLocation();
-  // 全局唯一副作用
   useEffect(() => {
     // 项目选择逻辑
     if (

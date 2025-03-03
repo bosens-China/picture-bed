@@ -21,7 +21,7 @@ export const SiderModal: FC<SiderProps> = ({
 }) => {
   const { message, modal } = App.useApp();
 
-  const [form] = Form.useForm<ProjectItem>();
+  const [form] = Form.useForm<Pick<ProjectItem, 'title' | 'userID'>>();
 
   const handleCancel = () => {
     setOpen(false);
@@ -45,7 +45,7 @@ export const SiderModal: FC<SiderProps> = ({
     let repeat = false;
     if (!edit?.id) {
       try {
-        const data = await runHistory({ uid: values.id });
+        const data = await runHistory({ uid: values.userID });
         repeat = !!data.list.length;
       } catch {
         //
@@ -56,7 +56,7 @@ export const SiderModal: FC<SiderProps> = ({
         title: `继续分组创建提示`,
         content: (
           <>
-            远程用户标识 <Tag>{values.id}</Tag>
+            远程用户标识 <Tag>{values.userID}</Tag>
             已经存在（可能其他用户也创建了相同的用户标识），是否继续添加项目？
           </>
         ),
@@ -66,10 +66,13 @@ export const SiderModal: FC<SiderProps> = ({
       }
     }
     if (edit?.id) {
-      editProject(values);
+      editProject(edit.id, {
+        ...edit,
+        ...values,
+      });
     } else {
       addProject(values);
-      setCurrent(values.id);
+      setCurrent(values.userID);
     }
     handleCancel();
     message.success(`${title}成功`);
@@ -163,7 +166,7 @@ export const SiderModal: FC<SiderProps> = ({
                 </Tooltip>
               </Space>
             }
-            name="id"
+            name="userID"
             extra={
               <Space className=" mt-1">
                 <Button
@@ -172,7 +175,7 @@ export const SiderModal: FC<SiderProps> = ({
                   onClick={async () => {
                     const res = await defaultFingerprint();
                     form.setFieldsValue({
-                      id: res.visitorId,
+                      userID: res.visitorId,
                     });
                   }}
                 >
@@ -182,7 +185,7 @@ export const SiderModal: FC<SiderProps> = ({
                   type="link"
                   onClick={() => {
                     form.setFieldsValue({
-                      id: getRandomId(),
+                      userID: getRandomId(),
                     });
                   }}
                 >

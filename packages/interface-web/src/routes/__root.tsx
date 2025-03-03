@@ -87,7 +87,7 @@ export const Route = createRootRoute({
                       title: `删除提醒`,
                       content: (
                         <>
-                          确定要删除该分组吗？
+                          确定要删除「{project.title}」分组吗？
                           <br />
                           删除分组只是在本地清空，后续如果添加相同用户标识的分组数据依然存在。
                         </>
