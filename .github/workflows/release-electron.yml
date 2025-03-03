@@ -4,11 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-
-    branches: [master]
-    paths:
-      - '.github/workflows/release-electron.yml'
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -24,7 +19,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: pnpm # 或 pnpm / yarn
 
       - name: Install dependencies
         run: pnpm install
