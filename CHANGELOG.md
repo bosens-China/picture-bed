@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - 修复上传文件没有项目也可以上传问题
 - 修复mjs输出格式不对问题，对ci报错修复
 - 对ci报错修复
+- 对ci更改npm未发布问题修复
 
 ### 🚜 Refactor
 
