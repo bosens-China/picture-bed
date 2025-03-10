@@ -4,7 +4,8 @@ on:
   push:
     branches: [master]
     paths:
-      - 'packages/core/**' # 仅当core目录有变化时触发
+      - 'packages/core/**'
+      - '.github/workflows/npm-publish.yml'
 
 jobs:
   publish:
