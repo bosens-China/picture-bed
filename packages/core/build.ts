@@ -1,4 +1,5 @@
 import * as esbuild from 'esbuild';
+import { dtsPlugin } from 'esbuild-plugin-d.ts';
 
 const tasks: Array<esbuild.BuildOptions> = [
   {
@@ -17,10 +18,12 @@ Promise.all(
   tasks.map((task) => {
     return esbuild.build({
       ...task,
+      external: ['axios'],
       bundle: true,
       minify: true,
       target: 'es2017',
       sourcemap: true,
+      plugins: [dtsPlugin()],
     });
   }),
 ).catch((e) => {

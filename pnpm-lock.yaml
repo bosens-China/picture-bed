@@ -58,8 +58,11 @@ importers:
       esbuild:
         specifier: ^0.25.0
         version: 0.25.0
+      esbuild-plugin-d.ts:
+        specifier: ^1.3.1
+        version: 1.3.1(typescript@5.8.2)
       tsx:
-        specifier: ^4.19.1
+        specifier: ^4.19.3
         version: 4.19.3
 
   packages/interface-electron:
@@ -3385,6 +3388,14 @@ packages:
       }
     engines: { node: '>=12' }
 
+  dts-bundle-generator@9.5.1:
+    resolution:
+      {
+        integrity: sha512-DxpJOb2FNnEyOzMkG11sxO2dmxPjthoVWxfKqWYJ/bI/rT1rvTMktF5EKjAYrRZu6Z6t3NhOUZ0sZ5ZXevOfbA==,
+      }
+    engines: { node: '>=14.0.0' }
+    hasBin: true
+
   dunder-proto@1.0.1:
     resolution:
       {
@@ -3577,6 +3588,15 @@ packages:
       {
         integrity: sha512-Um/+FxMr9CISWh0bi5Zv0iOD+4cFh5qLeks1qhAopKVAJw3drgKbKySikp7wGhDL0HPeaja0P5ULZrxLkniUVg==,
       }
+
+  esbuild-plugin-d.ts@1.3.1:
+    resolution:
+      {
+        integrity: sha512-is6W2FalyN5CFMMSNB6k6wIxTw5MGakQVN8+aCnF1g5mwQ21c/IkjgEkwlZy8GyLErmrTY1xympl+HPHtJw8DQ==,
+      }
+    engines: { node: '>=12.0.0' }
+    peerDependencies:
+      typescript: '*'
 
   esbuild-register@3.6.0:
     resolution:
@@ -7305,6 +7325,13 @@ packages:
       }
     engines: { node: '>=10' }
 
+  type-fest@4.37.0:
+    resolution:
+      {
+        integrity: sha512-S/5/0kFftkq27FPNye0XM1e2NsnoD/3FS+pBmbjmmtLT6I+i344KoOf7pvXreaFsDamWeaJX55nczA1m5PsBDg==,
+      }
+    engines: { node: '>=16' }
+
   typed-array-buffer@1.0.3:
     resolution:
       {
@@ -9855,6 +9882,11 @@ snapshots:
 
   dotenv@16.4.7: {}
 
+  dts-bundle-generator@9.5.1:
+    dependencies:
+      typescript: 5.8.2
+      yargs: 17.7.2
+
   dunder-proto@1.0.1:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -10051,6 +10083,14 @@ snapshots:
 
   es6-error@4.1.1:
     optional: true
+
+  esbuild-plugin-d.ts@1.3.1(typescript@5.8.2):
+    dependencies:
+      chalk: 4.1.2
+      dts-bundle-generator: 9.5.1
+      lodash.merge: 4.6.2
+      type-fest: 4.37.0
+      typescript: 5.8.2
 
   esbuild-register@3.6.0(esbuild@0.25.0):
     dependencies:
@@ -12715,6 +12755,8 @@ snapshots:
 
   type-fest@0.13.1:
     optional: true
+
+  type-fest@4.37.0: {}
 
   typed-array-buffer@1.0.3:
     dependencies:
