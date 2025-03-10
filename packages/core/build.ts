@@ -11,6 +11,7 @@ const tasks: Array<esbuild.BuildOptions> = [
     entryPoints: ['src/main.ts'],
     outfile: 'dist/main.mjs',
     platform: 'browser',
+    format: 'esm',
   },
 ];
 
