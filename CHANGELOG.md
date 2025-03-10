@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - 修复 tag.yml 失败
 - 对 tag.yml 报错处理
 - 修复上传文件没有项目也可以上传问题
+- 修复 mjs 输出格式不对问题，对 ci 报错修复
 
 ### 🚜 Refactor
 
