@@ -1,37 +1,9 @@
-// import { AxiosError } from 'axios';
-import { fileFromPath } from 'formdata-node/file-from-path';
-import { realUpload } from './upload-browser';
-import { UploadFilesBody } from '../main';
+import { AxiosProgressEvent } from 'axios';
+import { request } from '../utils/request';
 
-/**
- * 上传接口所需参数
- *
- * @export
- * @interface UploadBody
- */
 export interface UploadBody {
-  /**
-   * 文件名称，可选
-   * 如果为空则使用file或者使用filePath的名称
-   *
-   * @type {string}
-   * @memberof UploadBody
-   */
   fileName?: string;
-
-  /**
-   * node环境下使用，上传的file文件地址
-   *
-   * @type {string}
-   * @memberof UploadBody
-   */
-  filePath: string;
-  /**
-   * 分组身份标识，用于区分身份所使用
-   *
-   * @type {string}
-   * @memberof UploadBody
-   */
+  file: File;
   uid: string;
 }
 
@@ -49,21 +21,29 @@ export interface UploadReturnStructure {
   md5: string;
 }
 
-/**
- * node 上传文件方法
- * @param body
- * @param config
- * @returns
- */
+export type UploadProgress = (
+  progressEvent: AxiosProgressEvent,
+  body: Required<UploadBody>,
+) => void;
+
 export async function upload(
   body: UploadBody,
-  config?: UploadFilesBody<UploadBody>['config'],
+  onUploadProgress?: UploadProgress,
 ) {
-  const file = (await fileFromPath(body.filePath!)) as unknown as File;
-  const fileName = body.fileName ?? file.name;
+  const obj: Required<UploadBody> = {
+    fileName: body.fileName ?? body.file.name,
+    file: body.file,
+    uid: body.uid,
+  };
 
-  const { uid } = body;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return realUpload({ file, fileName, uid }, config as any);
+  const { data } = await request.postForm<UploadReturnStructure>(
+    `/img/upload`,
+    obj,
+    {
+      onUploadProgress: (progressEvent) => {
+        onUploadProgress?.(progressEvent, obj);
+      },
+    },
+  );
+  return data;
 }

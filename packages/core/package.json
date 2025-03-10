@@ -1,22 +1,25 @@
 {
-  "name": "core",
+  "name": "@boses/picture-bed-sdk",
   "version": "1.0.0",
-  "type": "module",
-  "main": "./src/main.ts",
+  "description": "图床上传sdk",
   "license": "MIT",
-  "dependencies": {
-    "formdata-node": "^6.0.3"
-  },
+  "type": "module",
+  "author": "yliu <yangboses@gmail.com>",
   "devDependencies": {
-    "axios": "^1.7.7"
+    "axios": "^1.7.7",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.1"
+  },
+  "homepage": "https://github.com/bosens-China/picture-bed",
+  "bugs": {
+    "url": "https://github.com/bosens-China/picture-bed/issues"
   },
   "peerDependencies": {
     "axios": ">=1.0.0"
   },
-  "exports": {
-    ".": "./src/main.ts",
-    "./upload-browser": "./src/utils/upload-browser.ts",
-    "./api/*": "./src/api/*",
-    "./config.json": "./src/config.json"
-  }
+  "files": [
+    "src"
+  ],
+  "main": "./src/main.ts",
+  "module": "./src/main.ts"
 }

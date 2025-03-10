@@ -1,7 +1,6 @@
-import { instance } from '../utils/request';
-import { defaultAxiosConfig } from '../main';
+import { request } from '../utils/request';
 
-export interface RequestParameters {
+export interface ImgDeleteParameters {
   uid: string;
   id: string;
 }
@@ -11,11 +10,10 @@ export interface RequestParameters {
  * @param body
  * @returns
  */
-export const imgDelete = async (body: RequestParameters) => {
+export const imgDelete = async (body: ImgDeleteParameters) => {
   const { uid, id } = body;
-  const { data } = await instance<boolean>({
+  const { data } = await request<boolean>({
     url: `/img/delete`,
-    ...defaultAxiosConfig,
     method: 'delete',
     params: {
       uid,

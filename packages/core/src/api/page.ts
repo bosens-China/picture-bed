@@ -1,21 +1,21 @@
 // https://playground.z.wiki/
 
-import { instance } from '../utils/request';
+import { request } from '../utils/request';
 
-export interface RequestParameters {
+export interface ImgHistoryParameters {
   uid: string;
 
   current?: number;
   pageSize?: number;
 }
 
-export interface ResponseParameters {
+export interface ImgHistoryResponse {
   page: number;
   total: number;
   data: Daum[];
 }
 
-export interface Daum {
+interface Daum {
   id: number;
   fileName: string;
   time: string;
@@ -33,12 +33,12 @@ export interface Daum {
  * 获取已上传成功的文件列表
  * 上传的格式，符合https://ahooks.js.org/zh-CN/hooks/use-pagination要求
  *
- * @param {RequestParameters} body
+ * @param {ImgHistoryParameters} body
  * @return {*}
  */
-export const imgHistory = async (body: RequestParameters) => {
+export const imgHistory = async (body: ImgHistoryParameters) => {
   const { uid, current = 1, pageSize = 10 } = body;
-  const { data } = await instance<ResponseParameters>({
+  const { data } = await request<ImgHistoryResponse>({
     url: `/img/history`,
     method: 'get',
     params: {

@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { defaultAxiosConfig } from '../main';
 
-export const instance = axios.create({
-  ...defaultAxiosConfig,
+export const request = axios.create({
+  baseURL: `https://playground.z.wiki`,
 });
 
-instance.interceptors.response.use(
+request.interceptors.response.use(
   function (response) {
     return response;
   },
