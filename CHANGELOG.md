@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### 🚀 Features
+
+- 增加编译后文件，防止兼容性问题
+
 ### 🐛 Bug Fixes
 
 - 修复ci拼写错误
