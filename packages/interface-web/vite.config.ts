@@ -2,18 +2,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
 import UnoCSS from 'unocss/vite';
-import { createRequire } from 'module';
-import path from 'node:path';
-import type Config from 'core/config.json';
 import { dependencies } from './package.json';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import svgr from 'vite-plugin-svgr';
-
-const require = createRequire(import.meta.url);
-const config: typeof Config = require(
-  path.join(require.resolve('core'), '../config.json'),
-);
-const { browserProxy, nodeConfiguration } = config;
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -59,14 +50,14 @@ export default defineConfig(({ mode, command }) => {
     server: {
       port: 4444,
       proxy: {
-        [browserProxy.baseURL]: {
-          target: nodeConfiguration.baseURL,
+        '/api': {
+          target: `https://playground.z.wiki`,
           changeOrigin: true,
           rewrite: (path) => {
-            return path.replace(browserProxy.baseURL, '');
+            return path.replace(`/api`, '');
           },
           headers: {
-            origin: nodeConfiguration.baseURL,
+            origin: `https://playground.z.wiki`,
           },
         },
       },

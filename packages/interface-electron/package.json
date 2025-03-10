@@ -4,7 +4,7 @@
   "main": "src/entry.js",
   "license": "MIT",
   "description": "敖武的图床应用",
-  "author": "杨柳 <yangboses@gmail.com>",
+  "author": "yliu <yangboses@gmail.com>",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron .",
     "build": "electron-builder"

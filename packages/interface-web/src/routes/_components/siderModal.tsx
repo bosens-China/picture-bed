@@ -1,6 +1,6 @@
 import { App, Button, Form, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import { FC, useMemo } from 'react';
-import { imgHistory } from 'core/api/page.js';
+import { imgHistory } from '@boses/picture-bed-sdk';
 import { useAsyncEffect, useRequest } from 'ahooks';
 import { ProjectItem, useProjectStore } from '@/store/project';
 import { useProject } from '@/hooks/use-project';

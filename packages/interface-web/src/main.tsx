@@ -6,8 +6,6 @@ import 'dayjs/locale/zh-cn';
 import { App } from 'antd';
 import '@/assets/styles/converge.less';
 import 'virtual:uno.css';
-// import { setAxiosConfiguration } from 'core';
-// import config from 'core/config.json';
 import { RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import { createHashHistory, createRouter } from '@tanstack/react-router';

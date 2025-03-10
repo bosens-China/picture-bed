@@ -1,11 +1,11 @@
 import { CopyOutlined, DashOutlined } from '@ant-design/icons';
 import { App, Avatar, Button, Dropdown, Image, Tooltip } from 'antd';
-import { Daum } from 'core/api/page.js';
+import { ImgHistoryResponse } from '@boses/picture-bed-sdk';
 import { FC } from 'react';
 import dayjs from 'dayjs';
 import copy from 'copy-text-to-clipboard';
 
-type CardProps = Daum;
+type CardProps = ImgHistoryResponse['data'][number];
 
 // 卡片
 export const Card: FC<CardProps> = ({

@@ -1,9 +1,9 @@
 import { Avatar, Image } from 'antd';
-import { ResponseParameters } from 'core/api/page.js';
+import { ImgHistoryResponse } from '@boses/picture-bed-sdk';
 import { FC, useMemo } from 'react';
 import { TypeIcons } from './types-icon';
 
-type Props = ResponseParameters['data'][number];
+type Props = ImgHistoryResponse['data'][number];
 
 export const Preview: FC<Props> = ({ url, contentType }) => {
   return useMemo(() => {

@@ -3,9 +3,8 @@ import { globalFunctions } from '@/utils/global-functions';
 import { CloudUploadOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { App, Dropdown, Space, theme, Upload, UploadProps } from 'antd';
-// import { uploadFiles, UploadFilesBody } from 'core';
-// import { browserUpload, UploadBodyBrowser } from 'core/api/upload-browser.js';
-import { UploadBrowser } from 'core/upload-browser';
+import { upload } from '@boses/picture-bed-sdk';
+import * as _ from 'lodash-es';
 
 export const MyUpload = () => {
   const { token } = theme.useToken();
@@ -13,19 +12,15 @@ export const MyUpload = () => {
   const { message } = App.useApp();
 
   const { run } = useRequest(
-    new UploadBrowser({
-      userConfig: {
-        onUploadProgress(progressEvent, body) {
-          // @ts-expect-error 忽略错误
-          const key = body.file._id;
-          message.open({
-            key,
-            type: 'loading',
-            content: `正在上传 ${body.file.name} 文件，当前进度：${Math.floor((progressEvent.progress ?? 0) * 100)}%`,
-          });
-        },
-      },
-    }).browserUpload,
+    _.partial(upload, _ as never, (progressEvent, body) => {
+      // @ts-expect-error 忽略错误
+      const key = body.file._id;
+      message.open({
+        key,
+        type: 'loading',
+        content: `正在上传 ${body.file.name} 文件，当前进度：${Math.floor((progressEvent.progress ?? 0) * 100)}%`,
+      });
+    }),
     {
       manual: true,
       /*

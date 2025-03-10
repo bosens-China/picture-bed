@@ -23,7 +23,7 @@
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
     "copy-text-to-clipboard": "^3.2.0",
-    "core": "workspace:*",
+    "@boses/picture-bed-sdk": "workspace:*",
     "dayjs": "^1.11.13",
     "immer": "^10.1.1",
     "lodash-es": "^4.17.21",

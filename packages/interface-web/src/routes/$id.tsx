@@ -3,7 +3,7 @@ import { getErrorMsg } from '@/utils/error';
 import { createFileRoute } from '@tanstack/react-router';
 import { usePagination, useSize } from 'ahooks';
 import { App, Pagination, Spin } from 'antd';
-import { imgHistory } from 'core/api/page.js';
+import { imgHistory } from '@boses/picture-bed-sdk';
 import { useEffect, useMemo } from 'react';
 import { Empty } from './_components/empty';
 import { globalFunctions } from '@/utils/global-functions';

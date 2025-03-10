@@ -51,14 +51,16 @@ importers:
         version: 8.25.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
 
   packages/core:
-    dependencies:
-      formdata-node:
-        specifier: ^6.0.3
-        version: 6.0.3
     devDependencies:
       axios:
         specifier: ^1.7.7
         version: 1.8.1
+      esbuild:
+        specifier: ^0.25.0
+        version: 0.25.0
+      tsx:
+        specifier: ^4.19.1
+        version: 4.19.3
 
   packages/interface-electron:
     dependencies:
@@ -90,6 +92,9 @@ importers:
       '@ant-design/v5-patch-for-react-19':
         specifier: ^1.0.3
         version: 1.0.3(antd@5.24.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@boses/picture-bed-sdk':
+        specifier: workspace:*
+        version: link:../core
       '@fingerprintjs/fingerprintjs':
         specifier: ^4.5.0
         version: 4.6.1
@@ -117,9 +122,6 @@ importers:
       copy-text-to-clipboard:
         specifier: ^3.2.0
         version: 3.2.0
-      core:
-        specifier: workspace:*
-        version: link:../core
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -187,9 +189,12 @@ importers:
 
   packages/typora:
     dependencies:
-      core:
+      '@boses/picture-bed-sdk':
         specifier: workspace:*
         version: link:../core
+      formdata-node:
+        specifier: ^6.0.3
+        version: 6.0.3
       tsx:
         specifier: ^4.19.1
         version: 4.19.3
