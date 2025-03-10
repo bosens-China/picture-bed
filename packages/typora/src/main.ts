@@ -1,23 +1,20 @@
-import { uploadFiles } from 'core';
-import { upload, UploadBody } from 'core/api/upload.ts';
+import { upload } from '@boses/picture-bed-sdk';
+import { fileFromPath } from 'formdata-node/file-from-path';
 
 const imgList = process.argv.slice(2);
 
-const files: UploadBody[] = imgList.map((f) => {
-  return {
-    filePath: f,
-    uid: 'yliu',
-  };
-});
+(async () => {
+  const files = await Promise.all(imgList.map((f) => fileFromPath(f)));
 
-uploadFiles(upload, { files }).then((res) => {
-  const result: string[] = [];
-  for (const element of res) {
-    if (element.status === 'rejected') {
-      return Promise.reject(element.reason);
-    }
-    result.push(element.value.url);
+  const arr: string[] = [];
+
+  for (const file of files) {
+    const result = await upload({
+      file: file as unknown as File,
+      uid: 'yliu',
+    });
+    arr.push(result.url);
   }
 
-  process.stdout.write(`Upload Success:\n${result.join('\n')}`);
-});
+  process.stdout.write(`Upload Success:\n${arr.join('\n')}`);
+})();

@@ -2,8 +2,9 @@
   "name": "typora",
   "version": "1.0.0",
   "dependencies": {
-    "tsx": "^4.19.1",
-    "core": "workspace:*"
+    "@boses/picture-bed-sdk": "workspace:*",
+    "formdata-node": "^6.0.3",
+    "tsx": "^4.19.1"
   },
   "scripts": {
     "build": "tsx ./src/main.ts"
