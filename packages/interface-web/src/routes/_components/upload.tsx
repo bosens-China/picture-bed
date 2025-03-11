@@ -11,53 +11,53 @@ export const MyUpload = () => {
   const { colorBgBase } = token;
   const { message } = App.useApp();
 
-  const { run } = useRequest(
-    _.partial(upload, _ as never, (progressEvent, body) => {
+  const fn = _.partialRight(upload, (progressEvent, body) => {
+    // @ts-expect-error 忽略错误
+    const key = body.file._id;
+    message.open({
+      key,
+      type: 'loading',
+      content: `正在上传 ${body.file.name} 文件，当前进度：${Math.floor((progressEvent.progress ?? 0) * 100)}%`,
+    });
+  });
+
+  const { run } = useRequest(fn, {
+    manual: true,
+    /*
+     * 将上传的资源全部重置为loading
+     * 排除掉已经成功的元素
+     */
+    onBefore([body]) {
+      const key = `${performance.now()}`;
       // @ts-expect-error 忽略错误
-      const key = body.file._id;
+      body.file._id = key;
       message.open({
         key,
         type: 'loading',
-        content: `正在上传 ${body.file.name} 文件，当前进度：${Math.floor((progressEvent.progress ?? 0) * 100)}%`,
+        content: `开始上传文件 ${body.file.name}`,
       });
-    }),
-    {
-      manual: true,
-      /*
-       * 将上传的资源全部重置为loading
-       * 排除掉已经成功的元素
-       */
-      onBefore([body]) {
-        const key = `${performance.now()}`;
-        // @ts-expect-error 忽略错误
-        body.file._id = key;
-        message.open({
-          key,
-          type: 'loading',
-          content: `开始上传文件 ${body.file.name}`,
-        });
-      },
-      onError(e, [body]) {
-        // @ts-expect-error 忽略错误
-        const key = body.file._id;
-        message.open({
-          key,
-          type: 'error',
-          content: e.message,
-        });
-      },
-      onSuccess(_data, [{ file }]) {
-        // @ts-expect-error 忽略错误
-        const key = file._id;
-        message.open({
-          key,
-          type: 'success',
-          content: `上传成功`,
-        });
-        globalFunctions.updateList?.();
-      },
     },
-  );
+    onError(e, [body]) {
+      // @ts-expect-error 忽略错误
+      const key = body.file._id;
+
+      message.open({
+        key,
+        type: 'error',
+        content: e.message,
+      });
+    },
+    onSuccess(_data, [{ file }]) {
+      // @ts-expect-error 忽略错误
+      const key = file._id;
+      message.open({
+        key,
+        type: 'success',
+        content: `上传成功`,
+      });
+      globalFunctions.updateList?.();
+    },
+  });
   const current = useProjectStore((state) => state.current);
   const projects = useProjectStore((state) => state.projects);
   const baseProps: UploadProps = {
