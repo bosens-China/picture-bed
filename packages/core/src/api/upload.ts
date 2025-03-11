@@ -1,5 +1,6 @@
 import { AxiosProgressEvent } from 'axios';
 import { request } from '../utils/request';
+import { obtainOrigin } from 'src/utils/obtain';
 
 export interface UploadBody {
   fileName?: string;
@@ -45,7 +46,7 @@ export async function upload(
       },
     },
   );
-  return data;
+  return obtainOrigin(data);
 }
 
 export async function uploadFormData(
@@ -81,5 +82,5 @@ export async function uploadFormData(
       },
     },
   );
-  return data;
+  return obtainOrigin(data);
 }

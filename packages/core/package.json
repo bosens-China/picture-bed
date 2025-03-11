@@ -1,6 +1,6 @@
 {
   "name": "@boses/picture-bed-sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "图床上传sdk",
   "license": "MIT",
   "type": "module",

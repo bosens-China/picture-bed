@@ -1,5 +1,6 @@
 // https://playground.z.wiki/
 
+import { obtainOrigin } from 'src/utils/obtain';
 import { request } from '../utils/request';
 
 export interface ImgHistoryParameters {
@@ -31,7 +32,7 @@ interface Daum {
 
 /**
  * 获取已上传成功的文件列表
- * 上传的格式，符合https://ahooks.js.org/zh-CN/hooks/use-pagination要求
+ * 上传的格式，符合https://ahooks.js.org/zh-CN/hooks/use-pagination 要求
  *
  * @param {ImgHistoryParameters} body
  * @return {*}
@@ -48,8 +49,14 @@ export const imgHistory = async (body: ImgHistoryParameters) => {
     },
   });
 
+  const { page, total, data: list } = data;
+  const newdata = list.map((item) => {
+    return obtainOrigin(item);
+  });
+
   return {
-    ...data,
-    list: data.data,
+    page,
+    total,
+    list: newdata,
   };
 };
