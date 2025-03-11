@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### 🚀 Features
 
 - 支持formData形式使用
+- 新增获取原始url的参数
 
 ### 🐛 Bug Fixes
 
