@@ -47,3 +47,39 @@ export async function upload(
   );
   return data;
 }
+
+export async function uploadFormData(
+  formData: FormData,
+  uid: UploadBody['uid'],
+  onUploadProgress?: UploadProgress,
+) {
+  if (!formData.has('file')) {
+    throw new Error(`formData 中缺少 file 参数`);
+  }
+  formData.append('uid', uid);
+
+  const file = formData.get('file') as File;
+
+  const fileName = (formData.get('fileName') as string) ?? file.name;
+  if (!formData.has('fileName')) {
+    formData.append('fileName', fileName);
+  }
+
+  const { data } = await request.post<UploadReturnStructure>(
+    `/img/upload`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        onUploadProgress?.(progressEvent, {
+          uid,
+          file,
+          fileName,
+        });
+      },
+    },
+  );
+  return data;
+}
