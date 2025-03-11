@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### 🚀 Features
+
+- 支持formData形式使用
+
 ### 🐛 Bug Fixes
 
 - 修复占位符失败，导致无法上传
