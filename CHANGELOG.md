@@ -17,6 +17,10 @@ All notable changes to this project will be documented in this file.
 
 - 重构分组部分逻辑
 
+### ⚙️ Miscellaneous Tasks
+
+- 更新依赖
+
 ## [1.0.0-patch] - 2025-03-10
 
 ### 🚀 Features
