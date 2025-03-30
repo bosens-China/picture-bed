@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 
 - 修复占位符失败，导致无法上传
 
+### 🚜 Refactor
+
+- 重构分组部分逻辑
+
 ## [1.0.0-patch] - 2025-03-10
 
 ### 🚀 Features
