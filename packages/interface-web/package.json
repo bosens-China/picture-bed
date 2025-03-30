@@ -39,7 +39,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "babel-plugin-react-compiler": "19.0.0-beta-e1e972c-20250221",
     "code-inspector-plugin": "^0.20.7",
     "eslint-plugin-react-compiler": "19.0.0-beta-e1e972c-20250221",
