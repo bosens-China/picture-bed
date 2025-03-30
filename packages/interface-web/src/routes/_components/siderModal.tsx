@@ -2,15 +2,15 @@ import { App, Button, Form, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import { FC, useMemo } from 'react';
 import { imgHistory } from '@boses/picture-bed-sdk';
 import { useAsyncEffect, useRequest } from 'ahooks';
-import { ProjectItem, useProjectStore } from '@/store/project';
-import { useProject } from '@/hooks/use-project';
+import { useGroupingStore, Grouping } from '@/store/grouping';
 import { defaultFingerprint } from '@/utils/fingerprint';
+import { useShallow } from 'zustand/shallow';
 
 export interface SiderProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  edit: ProjectItem | null;
-  setEdit: React.Dispatch<React.SetStateAction<ProjectItem | null>>;
+  edit: Grouping | null;
+  setEdit: React.Dispatch<React.SetStateAction<Grouping | null>>;
 }
 
 export const SiderModal: FC<SiderProps> = ({
@@ -21,7 +21,7 @@ export const SiderModal: FC<SiderProps> = ({
 }) => {
   const { message, modal } = App.useApp();
 
-  const [form] = Form.useForm<Pick<ProjectItem, 'title' | 'userID'>>();
+  const [form] = Form.useForm<Pick<Grouping, 'title' | 'uid'>>();
 
   const handleCancel = () => {
     setOpen(false);
@@ -45,7 +45,7 @@ export const SiderModal: FC<SiderProps> = ({
     let repeat = false;
     if (!edit?.id) {
       try {
-        const data = await runHistory({ uid: values.userID });
+        const data = await runHistory({ uid: values.uid });
         repeat = !!data.list.length;
       } catch {
         //
@@ -56,7 +56,7 @@ export const SiderModal: FC<SiderProps> = ({
         title: `继续分组创建提示`,
         content: (
           <>
-            远程用户标识 <Tag>{values.userID}</Tag>
+            远程用户标识 <Tag>{values.uid}</Tag>
             已经存在（可能其他用户也创建了相同的用户标识），是否继续添加项目？
           </>
         ),
@@ -66,13 +66,17 @@ export const SiderModal: FC<SiderProps> = ({
       }
     }
     if (edit?.id) {
-      editProject(edit.id, {
+      editGroup(edit.id, {
         ...edit,
         ...values,
       });
     } else {
-      addProject(values);
-      setCurrent(values.userID);
+      const id = getRandomId();
+      addGroup({
+        id,
+        ...values,
+      });
+      setActiveId(id);
     }
     handleCancel();
     message.success(`${title}成功`);
@@ -82,16 +86,25 @@ export const SiderModal: FC<SiderProps> = ({
     return edit?.id ? `编辑项目` : `添加项目`;
   }, [edit]);
 
-  const { projects, setCurrent, addProject } = useProject();
-  const editProject = useProjectStore((state) => state.editProject);
+  const { editGroup, addGroup, setActiveId, groups } = useGroupingStore(
+    useShallow((state) => {
+      return {
+        editGroup: state.editGroup,
+        addGroup: state.addGroup,
+        setActiveId: state.setActiveId,
+        activeId: state.activeId,
+        groups: state.groups,
+      };
+    }),
+  );
 
   const initialValues = async () => {
     return (
-      projects.find((f) => f.id === edit?.id) || {
-        id: projects.length
+      groups.find((f) => f.id === edit?.id) || {
+        id: groups.length
           ? getRandomId()
           : (await defaultFingerprint()).visitorId,
-        title: projects.length ? '' : `默认项目`,
+        title: groups.length ? '' : `默认项目`,
       }
     );
   };
@@ -128,7 +141,7 @@ export const SiderModal: FC<SiderProps> = ({
           layout="vertical"
           form={form}
         >
-          <Form.Item<ProjectItem>
+          <Form.Item<Grouping>
             label="项目名称"
             name="title"
             rules={[
@@ -141,7 +154,7 @@ export const SiderModal: FC<SiderProps> = ({
                   /*
                    * 新增则全部校验，编辑则去除自身校验更改名称是否重复
                    */
-                  const arr = projects
+                  const arr = groups
                     .filter((f) => f.id !== edit?.id)
                     .map((f) => f.title);
                   if (arr.includes(value)) {
@@ -155,7 +168,7 @@ export const SiderModal: FC<SiderProps> = ({
             <Input placeholder="请输入项目名称..."></Input>
           </Form.Item>
 
-          <Form.Item<ProjectItem>
+          <Form.Item<Grouping>
             label={
               <Space align="center" className="flex-1">
                 用户标识
@@ -166,7 +179,7 @@ export const SiderModal: FC<SiderProps> = ({
                 </Tooltip>
               </Space>
             }
-            name="userID"
+            name="uid"
             extra={
               <Space className=" mt-1">
                 <Button
@@ -175,7 +188,7 @@ export const SiderModal: FC<SiderProps> = ({
                   onClick={async () => {
                     const res = await defaultFingerprint();
                     form.setFieldsValue({
-                      userID: res.visitorId,
+                      uid: res.visitorId,
                     });
                   }}
                 >
@@ -185,7 +198,7 @@ export const SiderModal: FC<SiderProps> = ({
                   type="link"
                   onClick={() => {
                     form.setFieldsValue({
-                      userID: getRandomId(),
+                      uid: getRandomId(),
                     });
                   }}
                 >
@@ -203,7 +216,7 @@ export const SiderModal: FC<SiderProps> = ({
                   if (!value) {
                     return Promise.resolve();
                   }
-                  const arr = projects
+                  const arr = groups
                     .filter((f) => f.id !== edit?.id)
                     .map((f) => f.id);
                   if (arr.includes(value)) {

@@ -10,7 +10,7 @@ import {
   SearchOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { MenuProps, Tooltip } from 'antd';
+import { MenuProps, Tag, Tooltip } from 'antd';
 import {
   App,
   Button,
@@ -23,11 +23,13 @@ import {
 } from 'antd';
 import Logo from '@/assets/logo.svg?react';
 import Dir from '@/assets/dir.svg?react';
-import { useProject } from '@/hooks/use-project';
 import { SiderModal } from './_components/siderModal';
-import { ProjectItem, useProjectStore } from '@/store/project';
-import { useInspect } from '@/hooks/use-inspect';
+import { Grouping, useGroupingStore } from '@/store/grouping';
+
 import { MyUpload } from './_components/upload';
+import { useShallow } from 'zustand/shallow';
+import { useAsyncEffect } from 'ahooks';
+import { defaultFingerprint } from '@/utils/fingerprint';
 
 const { Header, Content, Sider } = Layout;
 
@@ -44,20 +46,41 @@ const siderStyle: React.CSSProperties = {
 
 export const Route = createRootRoute({
   component: () => {
-    const { projects, current } = useProject();
     const { modal, message } = App.useApp();
-    const removeProject = useProjectStore((state) => state.removeProject);
-    const setCurrent = useProjectStore((state) => state.setCurrent);
+    const { removeGroup, setActiveId, groups, activeId, addGroup } =
+      useGroupingStore(
+        useShallow((state) => {
+          return {
+            removeGroup: state.removeGroup,
+            setActiveId: state.setActiveId,
+            groups: state.groups,
+            activeId: state.activeId,
+            addGroup: state.addGroup,
+          };
+        }),
+      );
 
-    const items: MenuProps['items'] = projects.map((project) => ({
-      key: project.id,
+    // 初始化检查，如果没有的话创建一个空的分组
+    useAsyncEffect(async () => {
+      if (groups.length) {
+        return;
+      }
+      addGroup({
+        id: 'main',
+        title: '默认分组',
+        uid: (await defaultFingerprint()).visitorId,
+      });
+    }, []);
+
+    const items: MenuProps['items'] = groups.map((group) => ({
+      key: group.id,
       icon: <Dir></Dir>,
       label: (
         <div
           className="overflow-hidden flex-grow whitespace-nowrap text-ellipsis"
-          title={project.title}
+          title={group.title}
         >
-          {project.title}
+          {group.title}
         </div>
       ),
       extra: (
@@ -71,7 +94,7 @@ export const Route = createRootRoute({
                   icon: <FormOutlined />,
                   onClick: (e) => {
                     e.domEvent.stopPropagation();
-                    setEdit(project);
+                    setEdit(group);
                     setOpen(true);
                   },
                 },
@@ -87,13 +110,13 @@ export const Route = createRootRoute({
                       title: `删除提醒`,
                       content: (
                         <>
-                          确定要删除「{project.title}」分组吗？
+                          确定要删除「<Tag>{group.title}</Tag>」分组吗？
                           <br />
                           删除分组只是在本地清空，后续如果添加相同用户标识的分组数据依然存在。
                         </>
                       ),
                       onOk() {
-                        removeProject(project.id);
+                        removeGroup(group.id);
                         message.success('删除成功');
                       },
                     });
@@ -110,12 +133,7 @@ export const Route = createRootRoute({
     }));
 
     const [open, setOpen] = useState(false);
-    const [edit, setEdit] = useState<ProjectItem | null>(null);
-
-    /*
-     * 健康检查
-     */
-    useInspect();
+    const [edit, setEdit] = useState<Grouping | null>(null);
 
     return (
       <>
@@ -138,11 +156,11 @@ export const Route = createRootRoute({
               <Menu
                 theme="light"
                 mode="inline"
-                selectedKeys={[current].filter((f) => f !== null)}
+                selectedKeys={[activeId].filter((f) => f != null)}
                 items={items}
                 inlineIndent={12}
                 onClick={(e) => {
-                  setCurrent(e.key);
+                  setActiveId(e.key);
                 }}
               />
               <Button

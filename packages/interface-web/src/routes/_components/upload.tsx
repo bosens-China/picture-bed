@@ -1,10 +1,11 @@
-import { useProjectStore } from '@/store/project';
+import { useGroupingStore } from '@/store/grouping';
 import { globalFunctions } from '@/utils/global-functions';
 import { CloudUploadOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { App, Dropdown, Space, theme, Upload, UploadProps } from 'antd';
 import { upload } from '@boses/picture-bed-sdk';
 import * as _ from 'lodash-es';
+import { useShallow } from 'zustand/shallow';
 
 export const MyUpload = () => {
   const { token } = theme.useToken();
@@ -58,8 +59,17 @@ export const MyUpload = () => {
       globalFunctions.updateList?.();
     },
   });
-  const current = useProjectStore((state) => state.current);
-  const projects = useProjectStore((state) => state.projects);
+  const { activeId, groups } = useGroupingStore(
+    useShallow((state) => {
+      return {
+        activeId: state.activeId,
+        groups: state.groups,
+      };
+    }),
+  );
+
+  const currentUid = groups.find((f) => f.id === activeId)?.uid;
+
   const baseProps: UploadProps = {
     multiple: true,
     name: 'property',
@@ -67,7 +77,7 @@ export const MyUpload = () => {
     customRequest: (options) => {
       run({
         file: options.file as File,
-        uid: current!,
+        uid: currentUid!,
       });
       options.onSuccess?.(`${Date.now()}`);
     },
@@ -86,13 +96,13 @@ export const MyUpload = () => {
                 上传文件夹
               </Upload>
             ),
-            disabled: !projects.length,
+            disabled: !groups.length,
             key: 'dir',
             icon: <FolderOpenOutlined />,
           },
         ],
       }}
-      disabled={!projects.length}
+      disabled={!groups.length}
     >
       <Upload {...baseProps}>
         <Space style={{ color: colorBgBase }}>

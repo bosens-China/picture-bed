@@ -1,7 +1,7 @@
 import '@ant-design/v5-patch-for-react-19';
 import './configuration-modification';
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import 'dayjs/locale/zh-cn';
 import { App } from 'antd';
 import '@/assets/styles/converge.less';
@@ -20,30 +20,12 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
-
-// // 如果浏览器环境下
-// if (!IS_ELECTRON) {
-//   setAxiosConfiguration((axiosConfig) => {
-//     // 生产环境下不使用代理
-//     axiosConfig.baseURL = import.meta.env.DEV
-//       ? config.browserConfiguration.baseURL
-//       : config.nodeConfiguration.baseURL;
-
-//     axiosConfig.headers ||= {};
-//     axiosConfig.headers['origin'] = undefined;
-//   });
-// }
-
-const rootEl = document.getElementById('root');
-if (rootEl) {
-  const root = ReactDOM.createRoot(rootEl);
-  root.render(
-    <React.StrictMode>
-      <Theme>
-        <App>
-          <RouterProvider router={router} />
-        </App>
-      </Theme>
-    </React.StrictMode>,
-  );
-}
+createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <Theme>
+      <App>
+        <RouterProvider router={router} />
+      </App>
+    </Theme>
+  </React.StrictMode>,
+);

@@ -1,4 +1,4 @@
-import { useProjectStore } from '@/store/project';
+import { useGroupingStore } from '@/store/grouping';
 import { getErrorMsg } from '@/utils/error';
 import { createFileRoute } from '@tanstack/react-router';
 import { usePagination, useSize } from 'ahooks';
@@ -9,6 +9,7 @@ import { Empty } from './_components/empty';
 import { globalFunctions } from '@/utils/global-functions';
 import { Card } from './_components/card';
 import classnames from 'classnames';
+import { useShallow } from 'zustand/shallow';
 
 export const Route = createFileRoute('/$id')({
   component: Index,
@@ -20,8 +21,15 @@ export const Route = createFileRoute('/$id')({
 
 function Index() {
   const { message } = App.useApp();
-  const current = useProjectStore((state) => state.current);
-  const projects = useProjectStore((state) => state.projects);
+  const { activeId, groups } = useGroupingStore(
+    useShallow((state) => {
+      return {
+        activeId: state.activeId,
+        groups: state.groups,
+      };
+    }),
+  );
+
   const { isNull } = Route.useLoaderData();
 
   const size = useSize(document.body);
@@ -51,15 +59,15 @@ function Index() {
 
   const { pagination, data, loading, refresh } = usePagination(
     ({ pageSize, current: c }) => {
-      return imgHistory({ pageSize, current: c, uid: `${current}` });
+      return imgHistory({ pageSize, current: c, uid: `${activeId}` });
     },
     {
       onError(e) {
         message.error(getErrorMsg(e));
       },
-      ready: !!current && !isNull,
+      ready: !!activeId && !isNull,
       refreshDeps: [
-        current,
+        activeId,
         // numberChanges
       ],
     },
@@ -105,8 +113,8 @@ function Index() {
         </div>
       )}
 
-      {(isNull || !projects.length || !data?.total) && !loading && (
-        <Empty type={projects.length ? 'assets' : 'projects'}></Empty>
+      {(isNull || !groups.length || !data?.total) && !loading && (
+        <Empty type={groups.length ? 'assets' : 'projects'}></Empty>
       )}
     </div>
   );

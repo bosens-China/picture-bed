@@ -5,6 +5,7 @@ import UnoCSS from 'unocss/vite';
 import { dependencies } from './package.json';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import svgr from 'vite-plugin-svgr';
+import { codeInspectorPlugin } from 'code-inspector-plugin';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -19,11 +20,13 @@ export default defineConfig(({ mode, command }) => {
     base,
     plugins: [
       TanStackRouterVite({
-        target: 'react',
         autoCodeSplitting: true,
-        routeFileIgnorePattern: `.((css|const).ts)|_components`,
+        routeFileIgnorePattern: `.((css|const).ts)|_components|hooks`,
       }),
-      svgr(),
+      codeInspectorPlugin({
+        bundler: 'vite',
+      }),
+      svgr({}),
       react({
         babel: {
           plugins: [
