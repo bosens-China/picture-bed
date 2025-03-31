@@ -63,7 +63,7 @@ function Index() {
 
   const { pagination, data, loading, refresh } = usePagination(
     ({ pageSize, current: c }) => {
-      return imgHistory({ pageSize, current: c, uid: activeGroup!.uid });
+      return imgHistory({ pageSize, current: c, uid: activeGroup?.uid || '' });
     },
     {
       onError(e) {
@@ -109,7 +109,7 @@ function Index() {
       )}
 
       {(!groups.length || !data?.total) && !loading && (
-        <Empty type={groups.length ? 'assets' : 'projects'}></Empty>
+        <Empty type={'assets'}></Empty>
       )}
     </div>
   );

@@ -28,6 +28,7 @@ import { Grouping, useGroupingStore } from '@/store/grouping';
 
 import { MyUpload } from './_components/upload';
 import { useShallow } from 'zustand/shallow';
+import { useInitializeGrouping } from '@/hooks/use-initialize-grouping';
 
 const { Header, Content, Sider } = Layout;
 
@@ -128,6 +129,8 @@ function RouteComponent() {
 
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState<Grouping | null>(null);
+
+  useInitializeGrouping();
 
   return (
     <>

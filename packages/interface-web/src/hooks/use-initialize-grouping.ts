@@ -3,11 +3,14 @@ import { defaultFingerprint } from '@/utils/fingerprint';
 import { useAsyncEffect, useLocalStorageState } from 'ahooks';
 import { useShallow } from 'zustand/shallow';
 import { version } from '../../package.json';
+import { useNavigate } from '@tanstack/react-router';
 
 /*
  * 初始化分组的时候，插入一个分组
  */
 export const useInitializeGrouping = () => {
+  const navigate = useNavigate();
+
   const [initializeGrouping, setInitializeGrouping] = useLocalStorageState(
     `initializeGrouping_${version}`,
     {
@@ -19,6 +22,7 @@ export const useInitializeGrouping = () => {
       return {
         groups: state.groups,
         addGroup: state.addGroup,
+        setActiveId: state.setActiveId,
       };
     }),
   );
@@ -35,5 +39,11 @@ export const useInitializeGrouping = () => {
       uid,
     });
     setInitializeGrouping(true);
+    navigate({
+      to: '/grouping/$id',
+      params: {
+        id: 'main',
+      },
+    });
   }, []);
 };
