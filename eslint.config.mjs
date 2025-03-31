@@ -3,7 +3,7 @@ import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import checkFile from 'eslint-plugin-check-file';
+// import checkFile from 'eslint-plugin-check-file';
 // import reactHooks from 'eslint-plugin-react-hooks';
 import reactCompiler from 'eslint-plugin-react-compiler';
 
@@ -32,37 +32,37 @@ export default [
       // ...reactHooks.configs.recommended.rules,
     },
   },
-  {
-    files: ['packages/**/*'],
-    plugins: {
-      'check-file': checkFile,
-    },
-    rules: {
-      'check-file/no-index': 'error',
+  // {
+  //   files: ['packages/**/*'],
+  //   plugins: {
+  //     'check-file': checkFile,
+  //   },
+  //   rules: {
+  //     'check-file/no-index': 'error',
 
-      // 'check-file/folder-match-with-fex': [
-      //   'error',
-      //   {
-      //     '*.test.{js,jsx,ts,tsx}': '**/__tests__/',
-      //     '*.styled.{jsx,tsx}': '**/pages/',
-      //   },
-      // ],
-      // 'check-file/filename-naming-convention': [
-      //   'error',
-      //   {
-      //     '**/src/**/*.{jsx,tsx}': 'CAMEL_CASE',
-      //     '**/src/**/*.{js,ts}': 'KEBAB_CASE',
-      //   },
-      // ],
-      'check-file/folder-naming-convention': [
-        'error',
-        {
-          '**/src/**/': 'NEXT_JS_APP_ROUTER_CASE',
-          // 'mocks/*/': 'KEBAB_CASE',
-        },
-      ],
-    },
-  },
+  //     // 'check-file/folder-match-with-fex': [
+  //     //   'error',
+  //     //   {
+  //     //     '*.test.{js,jsx,ts,tsx}': '**/__tests__/',
+  //     //     '*.styled.{jsx,tsx}': '**/pages/',
+  //     //   },
+  //     // ],
+  //     // 'check-file/filename-naming-convention': [
+  //     //   'error',
+  //     //   {
+  //     //     '**/src/**/*.{jsx,tsx}': 'CAMEL_CASE',
+  //     //     '**/src/**/*.{js,ts}': 'KEBAB_CASE',
+  //     //   },
+  //     // ],
+  //     'check-file/folder-naming-convention': [
+  //       'error',
+  //       {
+  //         '**/src/**/': 'NEXT_JS_APP_ROUTER_CASE',
+  //         // 'mocks/*/': 'KEBAB_CASE',
+  //       },
+  //     ],
+  //   },
+  // },
   {
     rules: {
       'react/react-in-jsx-scope': 'off',

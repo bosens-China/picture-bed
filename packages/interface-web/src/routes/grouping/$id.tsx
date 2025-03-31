@@ -1,36 +1,38 @@
-import { useGroupingStore } from '@/store/grouping';
+import { useActiveGroup, useGroupingStore } from '@/store/grouping';
 import { getErrorMsg } from '@/utils/error';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { usePagination, useSize } from 'ahooks';
 import { App, Pagination, Spin } from 'antd';
 import { imgHistory } from '@boses/picture-bed-sdk';
 import { useEffect, useMemo } from 'react';
-import { Empty } from './_components/empty';
+import { Empty } from '../_components/empty';
 import { globalFunctions } from '@/utils/global-functions';
-import { Card } from './_components/card';
-import classnames from 'classnames';
+import { Card } from '../_components/card';
 import { useShallow } from 'zustand/shallow';
 
-export const Route = createFileRoute('/$id')({
+export const Route = createFileRoute('/grouping/$id')({
   component: Index,
   loader(ctx) {
-    const isNull = ctx.params.id === 'null';
-    return { isNull };
+    // 检查id是否有效，不存在重新定位
+    const id = ctx.params.id;
+    const { groups } = useGroupingStore.getState();
+    if (!groups.find((f) => f.id === id)) {
+      return redirect({
+        to: '/grouping',
+      });
+    }
   },
 });
 
 function Index() {
   const { message } = App.useApp();
-  const { activeId, groups } = useGroupingStore(
+  const { groups } = useGroupingStore(
     useShallow((state) => {
       return {
-        activeId: state.activeId,
         groups: state.groups,
       };
     }),
   );
-
-  const { isNull } = Route.useLoaderData();
 
   const size = useSize(document.body);
 
@@ -57,19 +59,18 @@ function Index() {
     return 1;
   }, [size?.width]);
 
+  const activeGroup = useActiveGroup();
+
   const { pagination, data, loading, refresh } = usePagination(
     ({ pageSize, current: c }) => {
-      return imgHistory({ pageSize, current: c, uid: `${activeId}` });
+      return imgHistory({ pageSize, current: c, uid: activeGroup!.uid });
     },
     {
       onError(e) {
         message.error(getErrorMsg(e));
       },
-      ready: !!activeId && !isNull,
-      refreshDeps: [
-        activeId,
-        // numberChanges
-      ],
+      ready: !!activeGroup?.uid,
+      refreshDeps: [activeGroup?.uid],
     },
   );
   useEffect(() => {
@@ -80,13 +81,7 @@ function Index() {
     <div>
       <div className="color-title text-size-4.5 lh-7">全部图片</div>
       <Spin tip="Loading..." spinning={loading} delay={100}>
-        <div
-          className={classnames([
-            {
-              'h-[calc(100vh-215px)]': data?.list.length,
-            },
-          ])}
-        >
+        <div>
           <div
             className={'my-5.75 gap-4 grid overflow-auto'}
             style={{
@@ -99,7 +94,7 @@ function Index() {
           </div>
         </div>
       </Spin>
-      {!isNull && !!data?.total && (
+      {!!data?.total && (
         <div className="flex justify-center">
           <Pagination
             className="flex-1 [&_.ant-pagination-total-text]-flex-1"
@@ -113,7 +108,7 @@ function Index() {
         </div>
       )}
 
-      {(isNull || !groups.length || !data?.total) && !loading && (
+      {(!groups.length || !data?.total) && !loading && (
         <Empty type={groups.length ? 'assets' : 'projects'}></Empty>
       )}
     </div>

@@ -1,0 +1,22 @@
+name: release-please
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    # 范围文件变化才触发
+    branches: [master]
+    paths:
+      - 'packages/core/**'
+      - '.github/workflows/release-please.yml'
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: node

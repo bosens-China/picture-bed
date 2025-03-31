@@ -5,6 +5,7 @@ import { useAsyncEffect, useRequest } from 'ahooks';
 import { useGroupingStore, Grouping } from '@/store/grouping';
 import { defaultFingerprint } from '@/utils/fingerprint';
 import { useShallow } from 'zustand/shallow';
+import { useNavigate } from '@tanstack/react-router';
 
 export interface SiderProps {
   open: boolean;
@@ -22,6 +23,7 @@ export const SiderModal: FC<SiderProps> = ({
   const { message, modal } = App.useApp();
 
   const [form] = Form.useForm<Pick<Grouping, 'title' | 'uid'>>();
+  const navigate = useNavigate();
 
   const handleCancel = () => {
     setOpen(false);
@@ -76,7 +78,12 @@ export const SiderModal: FC<SiderProps> = ({
         id,
         ...values,
       });
-      setActiveId(id);
+      navigate({
+        to: '/grouping/$id',
+        params: {
+          id,
+        },
+      });
     }
     handleCancel();
     message.success(`${title}成功`);
@@ -86,12 +93,12 @@ export const SiderModal: FC<SiderProps> = ({
     return edit?.id ? `编辑项目` : `添加项目`;
   }, [edit]);
 
-  const { editGroup, addGroup, setActiveId, groups } = useGroupingStore(
+  const { editGroup, addGroup, groups } = useGroupingStore(
     useShallow((state) => {
       return {
         editGroup: state.editGroup,
         addGroup: state.addGroup,
-        setActiveId: state.setActiveId,
+
         activeId: state.activeId,
         groups: state.groups,
       };
@@ -101,7 +108,7 @@ export const SiderModal: FC<SiderProps> = ({
   const initialValues = async () => {
     return (
       groups.find((f) => f.id === edit?.id) || {
-        id: groups.length
+        uid: groups.length
           ? getRandomId()
           : (await defaultFingerprint()).visitorId,
         title: groups.length ? '' : `默认项目`,

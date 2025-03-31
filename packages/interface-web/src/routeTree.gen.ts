@@ -11,14 +11,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
-import { Route as IdImport } from './routes/$id';
+import { Route as GroupingImport } from './routes/grouping';
 import { Route as IndexImport } from './routes/index';
+import { Route as GroupingIndexImport } from './routes/grouping/index';
+import { Route as GroupingIdImport } from './routes/grouping/$id';
 
 // Create/Update Routes
 
-const IdRoute = IdImport.update({
-  id: '/$id',
-  path: '/$id',
+const GroupingRoute = GroupingImport.update({
+  id: '/grouping',
+  path: '/grouping',
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -26,6 +28,18 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any);
+
+const GroupingIndexRoute = GroupingIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GroupingRoute,
+} as any);
+
+const GroupingIdRoute = GroupingIdImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => GroupingRoute,
 } as any);
 
 // Populate the FileRoutesByPath interface
@@ -39,51 +53,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
-    '/$id': {
-      id: '/$id';
-      path: '/$id';
-      fullPath: '/$id';
-      preLoaderRoute: typeof IdImport;
+    '/grouping': {
+      id: '/grouping';
+      path: '/grouping';
+      fullPath: '/grouping';
+      preLoaderRoute: typeof GroupingImport;
       parentRoute: typeof rootRoute;
+    };
+    '/grouping/$id': {
+      id: '/grouping/$id';
+      path: '/$id';
+      fullPath: '/grouping/$id';
+      preLoaderRoute: typeof GroupingIdImport;
+      parentRoute: typeof GroupingImport;
+    };
+    '/grouping/': {
+      id: '/grouping/';
+      path: '/';
+      fullPath: '/grouping/';
+      preLoaderRoute: typeof GroupingIndexImport;
+      parentRoute: typeof GroupingImport;
     };
   }
 }
 
 // Create and export the route tree
 
+interface GroupingRouteChildren {
+  GroupingIdRoute: typeof GroupingIdRoute;
+  GroupingIndexRoute: typeof GroupingIndexRoute;
+}
+
+const GroupingRouteChildren: GroupingRouteChildren = {
+  GroupingIdRoute: GroupingIdRoute,
+  GroupingIndexRoute: GroupingIndexRoute,
+};
+
+const GroupingRouteWithChildren = GroupingRoute._addFileChildren(
+  GroupingRouteChildren,
+);
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
-  '/$id': typeof IdRoute;
+  '/grouping': typeof GroupingRouteWithChildren;
+  '/grouping/$id': typeof GroupingIdRoute;
+  '/grouping/': typeof GroupingIndexRoute;
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
-  '/$id': typeof IdRoute;
+  '/grouping/$id': typeof GroupingIdRoute;
+  '/grouping': typeof GroupingIndexRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
-  '/$id': typeof IdRoute;
+  '/grouping': typeof GroupingRouteWithChildren;
+  '/grouping/$id': typeof GroupingIdRoute;
+  '/grouping/': typeof GroupingIndexRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/$id';
+  fullPaths: '/' | '/grouping' | '/grouping/$id' | '/grouping/';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/$id';
-  id: '__root__' | '/' | '/$id';
+  to: '/' | '/grouping/$id' | '/grouping';
+  id: '__root__' | '/' | '/grouping' | '/grouping/$id' | '/grouping/';
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
-  IdRoute: typeof IdRoute;
+  GroupingRoute: typeof GroupingRouteWithChildren;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  IdRoute: IdRoute,
+  GroupingRoute: GroupingRouteWithChildren,
 };
 
 export const routeTree = rootRoute
@@ -97,14 +144,26 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/$id"
+        "/grouping"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/$id": {
-      "filePath": "$id.tsx"
+    "/grouping": {
+      "filePath": "grouping.tsx",
+      "children": [
+        "/grouping/$id",
+        "/grouping/"
+      ]
+    },
+    "/grouping/$id": {
+      "filePath": "grouping/$id.tsx",
+      "parent": "/grouping"
+    },
+    "/grouping/": {
+      "filePath": "grouping/index.tsx",
+      "parent": "/grouping"
     }
   }
 }

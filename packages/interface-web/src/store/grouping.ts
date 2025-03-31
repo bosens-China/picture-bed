@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { produce } from 'immer';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { useShallow } from 'zustand/shallow';
+import { useMemo } from 'react';
 
 // 分组
 export interface Grouping {
@@ -77,3 +79,20 @@ export const useGroupingStore = create<GroupingState>()(
     },
   ),
 );
+
+export const useActiveGroup = () => {
+  const { activeId, groups } = useGroupingStore(
+    useShallow((state) => {
+      return {
+        activeId: state.activeId,
+        groups: state.groups,
+      };
+    }),
+  );
+  return useMemo(() => {
+    if (!activeId) {
+      return undefined;
+    }
+    return groups.find((group) => group.id === activeId);
+  }, [activeId, groups]);
+};
