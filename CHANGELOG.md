@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0](https://github.com/bosens-China/picture-bed/compare/v1.0.0...v1.1.0) (2025-03-31)
+
+
+### Features
+
+* 增加编译后文件，防止兼容性问题 ([df98450](https://github.com/bosens-China/picture-bed/commit/df98450018f39c0f94a2dce2f861bb8bae447dbc))
+* 支持formData形式使用 ([1191b1d](https://github.com/bosens-China/picture-bed/commit/1191b1d7bc945c17c6598abde628d7a2014a5974))
+* 新增获取原始url的参数 ([4c1d5b1](https://github.com/bosens-China/picture-bed/commit/4c1d5b183dc7d71cc09d057f415eb2e7bcdd5583))
+
+
+### Bug Fixes
+
+* 修复ci拼写错误 ([01d8a30](https://github.com/bosens-China/picture-bed/commit/01d8a306de77e7b902415559ac7cd9dbef30f029))
+* 修复mjs输出格式不对问题，对ci报错修复 ([d1ae6fd](https://github.com/bosens-China/picture-bed/commit/d1ae6fd687f8126ce5748331a0b6e94871c4e112))
+* 修复tag.yml失败 ([9118c5c](https://github.com/bosens-China/picture-bed/commit/9118c5c21f43644fa0ac900522e745296bb1d264))
+* 修复上传文件没有项目也可以上传问题 ([07646c1](https://github.com/bosens-China/picture-bed/commit/07646c1ac89a8cc074535af3719d1fefd1987ceb))
+* 修复占位符失败，导致无法上传 ([b3a853a](https://github.com/bosens-China/picture-bed/commit/b3a853a6e6c91314145185debd4b4752d8d440be))
+* 对ci报错修复 ([2bedc87](https://github.com/bosens-China/picture-bed/commit/2bedc8782ce3094a7e97c61fb9a7b5ee252283c1))
+* 对ci报错修复 ([6c0aed6](https://github.com/bosens-China/picture-bed/commit/6c0aed6d8fcf2b0c2c2be7d1a7c84d3192357deb))
+* 对ci更改npm未发布问题修复 ([6aa7abe](https://github.com/bosens-China/picture-bed/commit/6aa7abeeee8539fcc766efe824fd77b68d48dddc))
+* 对ci触发分支错误修复 ([c0deeaa](https://github.com/bosens-China/picture-bed/commit/c0deeaa9ac4a56e8260b2ef33233a4866de2a4e2))
+* 对tag.yml报错处理 ([062bf9c](https://github.com/bosens-China/picture-bed/commit/062bf9c421bc20192ba58966eef357858a7cee8a))
+
 ## [unreleased]
 
 ### 🚀 Features
