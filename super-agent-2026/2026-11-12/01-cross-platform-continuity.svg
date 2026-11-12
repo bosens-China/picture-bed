@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="857" viewBox="0 0 1680 857">
+<rect x="0" y="0" width="1680" height="857" fill="#ffffff"/>
+<style>text{font-family:Arial,"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",sans-serif}</style>
+<text x="64" y="78" font-size="43" font-weight="700" fill="#17191e">同一个任务，在 IM 和 GitHub 之间连续推进</text>
+<text x="64" y="123" font-size="25" fill="#818891">同一件事情从需求提出、Pull Request 评审到结果通知，不必重新解释上下文</text>
+<rect x="64" y="189" width="78" height="42" rx="21" fill="#fff" stroke="#d9dde3" stroke-width="1.5"/>
+<text x="103" y="217" text-anchor="middle" font-size="23" fill="#68707a">IM</text>
+<text x="214" y="218" font-size="25" font-weight="400" fill="#555b64">用户 A</text>
+<rect x="410" y="174" width="1210" height="77" rx="12" fill="#f5f6f8" stroke="#e0e3e7" stroke-width="1.8" />
+<text x="439" y="222" font-size="29" fill="#25282f">帮我给任务列表增加按项目筛选的能力。</text>
+<rect x="64" y="282" width="78" height="42" rx="21" fill="#fff" stroke="#d9dde3" stroke-width="1.5"/>
+<text x="103" y="310" text-anchor="middle" font-size="23" fill="#68707a">IM</text>
+<text x="214" y="311" font-size="25" font-weight="700" fill="#165fbe">Super-agent</text>
+<rect x="410" y="267" width="1210" height="77" rx="12" fill="#eef3ff" stroke="#b4c8f0" stroke-width="1.8" />
+<text x="439" y="315" font-size="29" fill="#25282f">收到，我会安排开发，完成后在 GitHub 创建 Pull Request。</text>
+<rect x="64" y="375" width="143" height="42" rx="21" fill="#fff" stroke="#d9dde3" stroke-width="1.5"/>
+<text x="135.5" y="403" text-anchor="middle" font-size="23" fill="#68707a">GitHub</text>
+<text x="214" y="404" font-size="25" font-weight="700" fill="#165fbe">Super-agent</text>
+<rect x="410" y="360" width="1210" height="77" rx="12" fill="#eef3ff" stroke="#b4c8f0" stroke-width="1.8" />
+<text x="439" y="408" font-size="29" fill="#25282f">已提交 PR #482，包含筛选功能和对应测试。</text>
+<rect x="64" y="468" width="143" height="42" rx="21" fill="#fff" stroke="#d9dde3" stroke-width="1.5"/>
+<text x="135.5" y="496" text-anchor="middle" font-size="23" fill="#68707a">GitHub</text>
+<text x="214" y="497" font-size="25" font-weight="400" fill="#555b64">评审者</text>
+<rect x="410" y="453" width="1210" height="77" rx="12" fill="#f5f6f8" stroke="#e0e3e7" stroke-width="1.8" />
+<text x="439" y="501" font-size="29" fill="#25282f">列表为空时需要展示空状态，可以补一下吗？</text>
+<rect x="64" y="561" width="143" height="42" rx="21" fill="#fff" stroke="#d9dde3" stroke-width="1.5"/>
+<text x="135.5" y="589" text-anchor="middle" font-size="23" fill="#68707a">GitHub</text>
+<text x="214" y="590" font-size="25" font-weight="700" fill="#165fbe">Super-agent</text>
+<rect x="410" y="546" width="1210" height="77" rx="12" fill="#eef3ff" stroke="#b4c8f0" stroke-width="1.8" />
+<text x="439" y="594" font-size="29" fill="#25282f">已经补上空状态和测试用例，并更新了同一个 PR。</text>
+<rect x="64" y="654" width="78" height="42" rx="21" fill="#fff" stroke="#d9dde3" stroke-width="1.5"/>
+<text x="103" y="682" text-anchor="middle" font-size="23" fill="#68707a">IM</text>
+<text x="214" y="683" font-size="25" font-weight="400" fill="#555b64">用户 A</text>
+<rect x="410" y="639" width="1210" height="77" rx="12" fill="#f5f6f8" stroke="#e0e3e7" stroke-width="1.8" />
+<text x="439" y="687" font-size="29" fill="#25282f">这个 PR 现在可以合并了吗？</text>
+<rect x="64" y="747" width="78" height="42" rx="21" fill="#fff" stroke="#d9dde3" stroke-width="1.5"/>
+<text x="103" y="775" text-anchor="middle" font-size="23" fill="#68707a">IM</text>
+<text x="214" y="776" font-size="25" font-weight="700" fill="#165fbe">Super-agent</text>
+<rect x="410" y="732" width="1210" height="77" rx="12" fill="#eef3ff" stroke="#b4c8f0" stroke-width="1.8" />
+<text x="439" y="780" font-size="29" fill="#25282f">测试已通过，Pull Request 已合并。</text>
+</svg>
